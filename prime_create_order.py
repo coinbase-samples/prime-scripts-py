@@ -1,4 +1,4 @@
-####By default, this code is set to market, however you can adjust order_type to 'LIMIT' if you would like to place a limit order. There is no need to update the payload, but do note the differences.
+####By default, this code is set to market, however you can adjust order_type to LIMIT if you would like to place a limit order. There is no need to update the payload, but do note the differences.
 import json, hmac, hashlib, time, requests, base64, uuid, os
 from urllib.parse import urlparse
 
