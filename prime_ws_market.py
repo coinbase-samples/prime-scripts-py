@@ -40,6 +40,7 @@ async def main_loop():
         except websockets.exceptions.ConnectionClosedError:
             print("Error caught")
             sys.exit(1)
+
 async def sign(channel, key, secret, account_id, portfolio_id, product_ids):
     message = channel + key + account_id + TIMESTAMP + portfolio_id + product_ids
     print(message)
