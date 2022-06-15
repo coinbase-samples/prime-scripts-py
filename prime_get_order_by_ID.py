@@ -10,9 +10,9 @@ portfolio_id = os.environ.get("PORTFOLIO_ID")
 ####required variables
 timestamp = str(int(time.time()))
 client_order_id = uuid.uuid4()
-method = "GET"
-order_id = os.environ.get("NEW_ORDER_ID")
-url = "https://api.prime.coinbase.com/v1/portfolios/"+portfolio_id+"/orders/"+order_id
+method = 'GET'
+order_id = os.environ.get('NEW_ORDER_ID')
+url = 'https://api.prime.coinbase.com/v1/portfolios/'+portfolio_id+'/orders/'+order_id
 
 ####signature and request
 url_path = urlparse(url).path

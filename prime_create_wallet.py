@@ -10,17 +10,17 @@ portfolio_id = os.environ.get("PORTFOLIO_ID")
 ####required variables
 timestamp = str(int(time.time()))
 idempotency_key = uuid.uuid4()
-method = "POST"
+method = 'POST'
 
 #user inputs
-wallet_name = os.environ.get("WALLET_NAME")
+wallet_name = os.environ.get('WALLET_NAME')
 
-url = "https://api.prime.coinbase.com/v1/portfolios/"+portfolio_id+"/wallets"
+url = 'https://api.prime.coinbase.com/v1/portfolios/'+portfolio_id+'/wallets'
 payload = {
-    "portfolio_id": portfolio_id,
-    "name": wallet_name,
-    "symbol": "eth",
-    "wallet_type": "VAULT"
+    'portfolio_id': portfolio_id,
+    'name': wallet_name,
+    'symbol': 'eth',
+    'wallet_type': 'VAULT'
     }
 
 ####signature and request

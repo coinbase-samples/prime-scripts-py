@@ -4,7 +4,7 @@ import time
 import websockets
 import sys
 import os
-uri = "wss://ws-feed.prime.coinbase.com"
+uri = 'wss://ws-feed.prime.coinbase.com'
 ch = 'l2_data'
 product_id = 'ETC-USD'
 PASSPHRASE = os.environ.get("PASSPHRASE")
@@ -12,21 +12,21 @@ ACCESS_KEY = os.environ.get("ACCESS_KEY")
 SIGNING_KEY = os.environ.get("SIGNING_KEY")
 SVC_ACCOUNTID = os.environ.get("SVC_ACCOUNTID")
 s = time.gmtime(time.time())
-TIMESTAMP = time.strftime("%Y-%m-%dT%H:%M:%SZ", s)
+TIMESTAMP = time.strftime('%Y-%m-%dT%H:%M:%SZ', s)
 async def main_loop():
     async with websockets.connect(uri, ping_interval=None, max_size=None) as websocket:
-        signature = await sign(ch, ACCESS_KEY, SIGNING_KEY, SVC_ACCOUNTID, "", product_id)
+        signature = await sign(ch, ACCESS_KEY, SIGNING_KEY, SVC_ACCOUNTID, '', product_id)
         print(signature)
         auth_message = json.dumps({
-            "type": "subscribe",
-            "channel": ch,
-            "access_key": ACCESS_KEY,
-            "api_key_id": SVC_ACCOUNTID,
-            "timestamp": TIMESTAMP,
-            "passphrase": PASSPHRASE,
-            "signature": signature,
-            "portfolio_id": "",
-            "product_ids": [product_id]
+            'type': 'subscribe',
+            'channel': ch,
+            'access_key': ACCESS_KEY,
+            'api_key_id': SVC_ACCOUNTID,
+            'timestamp': TIMESTAMP,
+            'passphrase': PASSPHRASE,
+            'signature': signature,
+            'portfolio_id': '',
+            'product_ids': [product_id]
         })
         await websocket.send(auth_message)
         try:
@@ -38,7 +38,7 @@ async def main_loop():
                 print(json.dumps(parsed, indent=3))
                 i+=1
         except websockets.exceptions.ConnectionClosedError:
-            print("Error caught")
+            print('Error caught')
             sys.exit(1)
 
 async def sign(channel, key, secret, account_id, portfolio_id, product_ids):

@@ -10,9 +10,9 @@ portfolio_id = os.environ.get("PORTFOLIO_ID")
 ####required variables
 timestamp = str(int(time.time()))
 idempotency_key = uuid.uuid4()
-method = "GET"
-wallet_name = os.environ.get("WALLET_NAME")
-url = "https://api.prime.coinbase.com/v1/portfolios/"+portfolio_id+"/wallets?type=VAULT&symbols=ETH"
+method = 'GET'
+wallet_name = os.environ.get('WALLET_NAME')
+url = 'https://api.prime.coinbase.com/v1/portfolios/'+portfolio_id+'/wallets?type=VAULT&symbols=ETH'
 
 ####signature and request
 url_path = urlparse(url).path

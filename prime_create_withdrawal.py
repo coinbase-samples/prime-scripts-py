@@ -10,7 +10,7 @@ portfolio_id = os.environ.get("PORTFOLIO_ID")
 ####required variables
 timestamp = str(int(time.time()))
 idempotency_key = uuid.uuid4()
-method = "POST"
+method = 'POST'
 
 #user inputs
 destination_type = 'DESTINATION_BLOCKCHAIN'
@@ -20,17 +20,17 @@ currency_symbol = 'eth'
 destination_wallet_address = os.environ.get('BLOCKCHAIN_ADDRESS')
 account_identifier = ''
 
-url = "https://api.prime.coinbase.com/v1/portfolios/"+portfolio_id+"/wallets/"+origin_wallet_id+"/withdrawals"
+url = 'https://api.prime.coinbase.com/v1/portfolios/'+portfolio_id+'/wallets/'+origin_wallet_id+'/withdrawals'
 payload = {
-    "portfolio_id": portfolio_id,
-    "wallet_id": origin_wallet_id,
-    "amount": amount,
-    "destination_type": destination_type,
-    "idempotency_key": str(idempotency_key),
-    "currency_symbol": currency_symbol,
-    "blockchain_address": {
-        "address": destination_wallet_address,
-        "account_identifier": account_identifier
+    'portfolio_id': portfolio_id,
+    'wallet_id': origin_wallet_id,
+    'amount': amount,
+    'destination_type': destination_type,
+    'idempotency_key': str(idempotency_key),
+    'currency_symbol': currency_symbol,
+    'blockchain_address': {
+        'address': destination_wallet_address,
+        'account_identifier': account_identifier
     }
 }
 

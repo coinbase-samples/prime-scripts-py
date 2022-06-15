@@ -11,13 +11,13 @@ portfolio_id = os.environ.get("PORTFOLIO_ID")
 ####required variables
 timestamp = str(int(time.time()))
 client_order_id = uuid.uuid4()
-method = "POST"
+method = 'POST'
 
 #get order preview
-#url = "https://api.prime.coinbase.com/v1/portfolios/"+portfolio_id+"/order_preview"
+url = 'https://api.prime.coinbase.com/v1/portfolios/'+portfolio_id+'/order_preview'
 
 #create order
-url = "https://api.prime.coinbase.com/v1/portfolios/"+portfolio_id+"/order"
+#url = 'https://api.prime.coinbase.com/v1/portfolios/'+portfolio_id+'/order'
 
 #user inputs
 product_id = 'ETH-USD'
@@ -27,16 +27,16 @@ limit_price = '1600'
 base_quantity = '0.01'
 
 payload = {
-    "portfolio_id": portfolio_id,
-    "product_id": product_id,
-    "client_order_id": str(client_order_id),
-    "side": side,
-    "type": order_type,
-    "base_quantity": base_quantity
+    'portfolio_id': portfolio_id,
+    'product_id': product_id,
+    'client_order_id': str(client_order_id),
+    'side': side,
+    'type': order_type,
+    'base_quantity': base_quantity
 }
 
 if order_type == 'LIMIT':
-    payload["limit_price"] = limit_price
+    payload['limit_price'] = limit_price
 
 ####signature and request
 url_path = urlparse(url).path

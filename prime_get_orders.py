@@ -11,15 +11,15 @@ portfolio_id = os.environ.get("PORTFOLIO_ID")
 ####required variables
 timestamp = str(int(time.time()))
 client_order_id = uuid.uuid4()
-method = "GET"
+method = 'GET'
 
 #user inputs
-product_id = "ETH-USD"
+product_id = 'ETH-USD'
 #order_statuses = ''
 #order_type = ''
-#order_side ''
+#order_side = ''
 
-url = "https://api.prime.coinbase.com/v1/portfolios/"+portfolio_id+"/orders?product_ids="+product_id+"&sort_direction=DESC"
+url = 'https://api.prime.coinbase.com/v1/portfolios/'+portfolio_id+'/orders?product_ids='+product_id+'&sort_direction=DESC'
 
 ####signature and request
 url_path = urlparse(url).path

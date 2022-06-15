@@ -1,5 +1,6 @@
 import json, hmac, hashlib, time, requests, base64, uuid, os
 from urllib.parse import urlparse
+
 ####credentials
 api_key = os.environ.get("ACCESS_KEY")
 secret_key = os.environ.get("SIGNING_KEY")
@@ -8,18 +9,18 @@ portfolio_id = os.environ.get("PORTFOLIO_ID")
 
 timestamp = str(int(time.time()))
 idempotency_key = uuid.uuid4()
-method = "POST"
-origin_wallet_id = os.environ.get("ORIGIN_WALLET_ID")
+method = 'POST'
+origin_wallet_id = os.environ.get('ORIGIN_WALLET_ID')
 amount = '0.01'
 currency_symbol = 'ETH'
-url = "https://api.prime.coinbase.com/v1/portfolios/"+portfolio_id+"/wallets/"+origin_wallet_id+"/transfers"
+url = 'https://api.prime.coinbase.com/v1/portfolios/'+portfolio_id+'/wallets/'+origin_wallet_id+'/transfers'
 payload = {
-    "portfolio_id": portfolio_id,
-    "wallet_id": origin_wallet_id,
-    "amount": amount,
-    "destination": os.environ.get("WALLET_ID"),
-    "idempotency_key": str(idempotency_key),
-    "currency_symbol": currency_symbol
+    'portfolio_id': portfolio_id,
+    'wallet_id': origin_wallet_id,
+    'amount': amount,
+    'destination': os.environ.get('WALLET_ID'),
+    'idempotency_key': str(idempotency_key),
+    'currency_symbol': currency_symbol
 }
 ####signature and request
 url_path = urlparse(url).path
