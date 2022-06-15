@@ -6,7 +6,7 @@ import sys
 import os
 uri = "wss://ws-feed.prime.coinbase.com"
 ch = 'l2_data'
-product_id = 'ETH-USD'
+product_id = 'ETC-USD'
 PASSPHRASE = os.environ.get("PASSPHRASE")
 ACCESS_KEY = os.environ.get("ACCESS_KEY")
 SIGNING_KEY = os.environ.get("SIGNING_KEY")
@@ -31,10 +31,12 @@ async def main_loop():
         await websocket.send(auth_message)
         try:
             processor = None
-            while True:
+            i=0
+            while i<20:
                 response = await websocket.recv()
                 parsed = json.loads(response)
                 print(json.dumps(parsed, indent=3))
+                i+=1
         except websockets.exceptions.ConnectionClosedError:
             print("Error caught")
             sys.exit(1)
