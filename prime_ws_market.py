@@ -32,7 +32,7 @@ async def main_loop():
         try:
             processor = None
             i=0
-            while i<20:
+            while i<10:
                 response = await websocket.recv()
                 parsed = json.loads(response)
                 print(json.dumps(parsed, indent=3))

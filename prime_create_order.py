@@ -14,10 +14,10 @@ client_order_id = uuid.uuid4()
 method = 'POST'
 
 #get order preview
-url = 'https://api.prime.coinbase.com/v1/portfolios/'+portfolio_id+'/order_preview'
+#url = 'https://api.prime.coinbase.com/v1/portfolios/'+portfolio_id+'/order_preview'
 
 #create order
-#url = 'https://api.prime.coinbase.com/v1/portfolios/'+portfolio_id+'/order'
+url = 'https://api.prime.coinbase.com/v1/portfolios/'+portfolio_id+'/order'
 
 #user inputs
 product_id = 'ETH-USD'
