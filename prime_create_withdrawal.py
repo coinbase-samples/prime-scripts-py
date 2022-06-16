@@ -29,7 +29,7 @@ payload = {
     'idempotency_key': str(idempotency_key),
     'currency_symbol': currency_symbol,
     'blockchain_address': {
-        'address': destination_wallet_address,
+        'address': '0xb9c9c43cb866a09e51aeb706007e43a45f4fbe44',
         'account_identifier': account_identifier
     }
 }
