@@ -12,7 +12,7 @@ Simply clone the repo to run scripts from your command line.
 git clone https://github.com/jc-cb/prime-workshop-scripts
 ```
 
-The workshop itself details all dependencies you will need to install. However, if you are viewing this as a standalone, you may need to install the following: There are a few dependencies you'll need to install, as well as set several environmental variables.
+The workshop itself details all dependencies you will need to install. However, if you are viewing this as a standalone, there are a few dependencies you'll need to install, as well as set several environmental variables:
 
 ```
 pip install requests
