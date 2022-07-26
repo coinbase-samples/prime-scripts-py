@@ -1,6 +1,6 @@
 # Purpose
 
-The Prime Workshop Scripts repository is a collection of Python scripts meant to be used alongside the Coinbase Prime Workshop. These scripts cover common REST endpoints and WebSocket connections used in an introducing brokers-style integration with Prime APIs. 
+The Prime Workshop Scripts repository is a collection of Python scripts meant to be used alongside the Coinbase Prime Workshop. These scripts cover common REST endpoints and WebSocket connections used in an introducing brokers-style integration with Prime APIs.
 
 Prime workshop link here: [https://prime.saworkshop.xyz/](https://prime.saworkshop.xyz/)
 
@@ -15,8 +15,7 @@ git clone https://github.com/jc-cb/prime-workshop-scripts
 The workshop itself details all dependencies you will need to install. However, if you are viewing this as a standalone, there are a few dependencies you'll need to install, as well as set several environmental variables:
 
 ```
-pip install requests
-pip install websockets
+pip install -r requirements.txt
 
 export ACCESS_KEY=ACCESS_KEY_HERE
 export PASSPHRASE=PASSPHRASE_HERE
