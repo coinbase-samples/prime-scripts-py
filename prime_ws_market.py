@@ -29,10 +29,10 @@ SIGNING_KEY = os.environ.get("SIGNING_KEY")
 SVC_ACCOUNTID = os.environ.get("SVC_ACCOUNTID")
 s = time.gmtime(time.time())
 TIMESTAMP = time.strftime('%Y-%m-%dT%H:%M:%SZ', s)
-async def main_loop():
-    async with websockets.connect(uri, ping_interval=None, max_size=None) as websocket:
+async def main_loop(): 
+  async for websocket in websockets.connect(uri, ping_interval=None, max_size=None):
+    try:
         signature = await sign(ch, ACCESS_KEY, SIGNING_KEY, SVC_ACCOUNTID, '', product_id)
-        print(signature)
         auth_message = json.dumps({
             'type': 'subscribe',
             'channel': ch,
@@ -45,17 +45,15 @@ async def main_loop():
             'product_ids': [product_id]
         })
         await websocket.send(auth_message)
-        try:
-            processor = None
-            i=0
-            while i<10:
-                response = await websocket.recv()
-                parsed = json.loads(response)
-                print(json.dumps(parsed, indent=3))
-                i+=1
-        except websockets.exceptions.ConnectionClosedError:
-            print('Error caught')
-            sys.exit(1)
+        processor = None
+        i=0
+        while i<10:
+          response = await websocket.recv()
+          parsed = json.loads(response)
+          print(json.dumps(parsed, indent=3))
+          i+=1
+    except websockets.ConnectionClosed:
+      continue
 
 async def sign(channel, key, secret, account_id, portfolio_id, product_ids):
     message = channel + key + account_id + TIMESTAMP + portfolio_id + product_ids
@@ -65,5 +63,4 @@ async def sign(channel, key, secret, account_id, portfolio_id, product_ids):
     print(signature_b64)
     return signature_b64
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main_loop())
+    asyncio.get_event_loop().run_until_complete(main_loop())

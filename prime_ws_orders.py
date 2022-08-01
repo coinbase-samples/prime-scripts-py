@@ -32,7 +32,8 @@ portfolio_id = os.environ.get("PORTFOLIO_ID")
 s = time.gmtime(time.time())
 TIMESTAMP = time.strftime('%Y-%m-%dT%H:%M:%SZ', s)
 async def main_loop():
-    async with websockets.connect(uri, ping_interval=None, max_size=None) as websocket:
+    async for websocket in websockets.connect(uri, ping_interval=None, max_size=None):
+      try:
         signature = await sign(ch, ACCESS_KEY, SIGNING_KEY, SVC_ACCOUNTID, portfolio_id, product_id)
         print(signature)
         auth_message = json.dumps({
@@ -47,15 +48,13 @@ async def main_loop():
             'product_ids': [product_id]
         })
         await websocket.send(auth_message)
-        try:
-            processor = None
-            while True:
-                response = await websocket.recv()
-                parsed = json.loads(response)
-                print(json.dumps(parsed, indent=3))
-        except websockets.exceptions.ConnectionClosedError:
-            print('Error caught')
-            sys.exit(1)
+        processor = None
+        while True:
+          response = await websocket.recv()
+          parsed = json.loads(response)
+          print(json.dumps(parsed, indent=3))
+      except websockets.ConnectionClosed:
+          continue
 async def sign(channel, key, secret, account_id, portfolio_id, product_ids):
     message = channel + key + account_id + TIMESTAMP + portfolio_id + product_ids
     print(message)
