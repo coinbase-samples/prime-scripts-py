@@ -21,28 +21,24 @@ SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
-origin_wallet_id = os.environ.get('WALLET_ID')
-URI = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{origin_wallet_id}/withdrawals'
+URI = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/order_preview'
 
 TIMESTAMP = str(int(time.time()))
-IDEMPOTENCY_KEY = uuid.uuid4()
+CLIENT_ORDER_ID = uuid.uuid4()
 METHOD = 'POST'
 
-destination_type = 'DESTINATION_BLOCKCHAIN'
-amount = '0.01'
-currency_symbol = 'eth'
-destination_wallet_address = os.environ.get('BLOCKCHAIN_ADDRESS')
+product_id = 'ETH-USD'
+side = 'BUY'
+order_type = 'MARKET'
+base_quantity = '0.01'
 
 payload = {
     'PORTFOLIO_ID': PORTFOLIO_ID,
-    'wallet_id': origin_wallet_id,
-    'amount': amount,
-    'destination_type': destination_type,
-    'IDEMPOTENCY_KEY': str(IDEMPOTENCY_KEY),
-    'currency_symbol': currency_symbol,
-    'blockchain_address': {
-        'address': destination_wallet_address
-    }
+    'product_id': product_id,
+    'client_order_id': str(CLIENT_ORDER_ID),
+    'side': side,
+    'type': order_type,
+    'base_quantity': base_quantity
 }
 
 # signature and request
@@ -52,12 +48,13 @@ signature = hmac.digest(SECRET_KEY.encode('utf-8'), message.encode('utf-8'), has
 signature_b64 = base64.b64encode(signature)
 
 headers = {
-   'X-CB-ACCESS-SIGNATURE': signature_b64,
-   'X-CB-ACCESS-TIMESTAMP': TIMESTAMP,
-   'X-CB-ACCESS-KEY': API_KEY,
-   'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
-   'Accept': 'application/json'
+    'X-CB-ACCESS-SIGNATURE': signature_b64,
+    'X-CB-ACCESS-TIMESTAMP': TIMESTAMP,
+    'X-CB-ACCESS-KEY': API_KEY,
+    'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
+    'Accept': 'application/json'
 }
+
 response = requests.post(URI, json=payload, headers=headers)
 parsed_response = json.loads(response.text)
-print(json.dumps(parsed_response, indent=3))
+print(json.dumps(parsed_response,indent=3))
