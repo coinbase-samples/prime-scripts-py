@@ -4,6 +4,8 @@ The Prime Workshop Scripts repository is a collection of Python scripts meant to
 
 Prime workshop link here: [https://prime.saworkshop.dev/](https://prime.saworkshop.dev/)
 
+All scripts are written in Python3 and have been tested with versions that are not end of life.
+
 ## Installation
 
 Simply clone the repo to run scripts from your command line.
