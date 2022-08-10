@@ -24,7 +24,6 @@ PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 URI = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/address_book'
 
 TIMESTAMP = str(int(time.time()))
-client_order_id = uuid.uuid4()
 METHOD = 'POST'
 
 ADDRESS = os.environ.get('BLOCKCHAIN_ADDRESS')
