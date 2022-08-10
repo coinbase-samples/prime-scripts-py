@@ -21,8 +21,8 @@ SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
-origin_wallet_id = os.environ.get('ORIGIN_WALLET_ID')
-URI = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{origin_wallet_id}/transfers'
+ORIGIN_WALLET_ID = os.environ.get('ORIGIN_WALLET_ID')
+URI = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{ORIGIN_WALLET_ID}/transfers'
 
 TIMESTAMP = str(int(time.time()))
 IDEMPOTENCY_KEY = uuid.uuid4()
@@ -33,7 +33,7 @@ amount = '0.01'
 
 payload = {
     'PORTFOLIO_ID': PORTFOLIO_ID,
-    'wallet_id': origin_wallet_id,
+    'wallet_id': ORIGIN_WALLET_ID,
     'amount': amount,
     'destination': os.environ.get('WALLET_ID'),
     'IDEMPOTENCY_KEY': str(IDEMPOTENCY_KEY),

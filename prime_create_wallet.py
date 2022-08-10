@@ -21,20 +21,19 @@ SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
+URI = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets'
+
 TIMESTAMP = str(int(time.time()))
 IDEMPOTENCY_KEY = uuid.uuid4()
 METHOD = 'POST'
-
-wallet_name = os.environ.get('WALLET_NAME')
-
-URI = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets'
+WALLET_NAME = os.environ.get('WALLET_NAME')
 
 symbol = 'eth'
 wallet_type = 'VAULT'
 
 payload = {
     'PORTFOLIO_ID': PORTFOLIO_ID,
-    'name': wallet_name,
+    'name': WALLET_NAME,
     'symbol': symbol,
     'wallet_type': wallet_type
     }

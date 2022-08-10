@@ -21,27 +21,27 @@ SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
-origin_wallet_id = os.environ.get('WALLET_ID')
-URI = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{origin_wallet_id}/withdrawals'
+ORIGIN_WALLET_ID = os.environ.get('WALLET_ID')
+URI = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{ORIGIN_WALLET_ID}/withdrawals'
 
 TIMESTAMP = str(int(time.time()))
 IDEMPOTENCY_KEY = uuid.uuid4()
 METHOD = 'POST'
+DESTINATION_WALLET_ADDRESS = os.environ.get('BLOCKCHAIN_ADDRESS')
 
 destination_type = 'DESTINATION_BLOCKCHAIN'
 amount = '0.01'
 currency_symbol = 'eth'
-destination_wallet_address = os.environ.get('BLOCKCHAIN_ADDRESS')
 
 payload = {
     'PORTFOLIO_ID': PORTFOLIO_ID,
-    'wallet_id': origin_wallet_id,
+    'wallet_id': ORIGIN_WALLET_ID,
     'amount': amount,
     'destination_type': destination_type,
     'IDEMPOTENCY_KEY': str(IDEMPOTENCY_KEY),
     'currency_symbol': currency_symbol,
     'blockchain_address': {
-        'address': destination_wallet_address
+        'address': DESTINATION_WALLET_ADDRESS
     }
 }
 

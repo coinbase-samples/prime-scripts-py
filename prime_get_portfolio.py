@@ -24,7 +24,7 @@ PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 URI =f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}'
 
 TIMESTAMP = str(int(time.time()))
-METHOD ='GET'
+METHOD = 'GET'
 
 # signature and request
 url_path = urlparse(URI).path

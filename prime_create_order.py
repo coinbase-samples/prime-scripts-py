@@ -24,7 +24,7 @@ PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 URI = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/order'
 
 TIMESTAMP = str(int(time.time()))
-client_order_id = uuid.uuid4()
+CLIENT_ORDER_ID = uuid.uuid4()
 METHOD = 'POST'
 
 product_id = 'ETH-USD'
@@ -35,7 +35,7 @@ base_quantity = '0.01'
 payload = {
     'PORTFOLIO_ID': PORTFOLIO_ID,
     'product_id': product_id,
-    'client_order_id': str(client_order_id),
+    'client_order_id': str(CLIENT_ORDER_ID),
     'side': side,
     'type': order_type,
     'base_quantity': base_quantity

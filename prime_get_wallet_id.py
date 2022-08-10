@@ -21,11 +21,11 @@ SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
-URI =f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets?type=VAULT&symbols=ETH'
+URI = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets?type=VAULT&symbols=ETH'
 
 TIMESTAMP = str(int(time.time()))
 IDEMPOTENCY_KEY = uuid.uuid4()
-wallet_name = os.environ.get('WALLET_NAME')
+WALLET_NAME = os.environ.get('WALLET_NAME')
 METHOD = 'GET'
 
 # signature and request
@@ -46,6 +46,6 @@ parsed_response = json.loads(response.text)
 wallets = parsed_response['wallets']
 
 for wallet in wallets:
-    if wallet['name'] == wallet_name:
+    if wallet['name'] == WALLET_NAME:
         destination_wallet_id = wallet['id']
         print(destination_wallet_id)
