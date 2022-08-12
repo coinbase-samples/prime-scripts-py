@@ -20,44 +20,41 @@ API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
-
 ORIGIN_WALLET_ID = os.environ.get('WALLET_ID')
-URI = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{ORIGIN_WALLET_ID}/withdrawals'
-
-TIMESTAMP = str(int(time.time()))
-IDEMPOTENCY_KEY = uuid.uuid4()
-METHOD = 'POST'
 DESTINATION_WALLET_ADDRESS = os.environ.get('BLOCKCHAIN_ADDRESS')
 
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{ORIGIN_WALLET_ID}/withdrawals'
+timestamp = str(int(time.time()))
+idempotency_key = str(uuid.uuid4())
+method = 'POST'
 destination_type = 'DESTINATION_BLOCKCHAIN'
 amount = '0.01'
 currency_symbol = 'eth'
 
 payload = {
-    'PORTFOLIO_ID': PORTFOLIO_ID,
+    'portfolio_id': PORTFOLIO_ID,
     'wallet_id': ORIGIN_WALLET_ID,
     'amount': amount,
     'destination_type': destination_type,
-    'IDEMPOTENCY_KEY': str(IDEMPOTENCY_KEY),
+    'idempotency_key': idempotency_key,
     'currency_symbol': currency_symbol,
     'blockchain_address': {
         'address': DESTINATION_WALLET_ADDRESS
     }
 }
 
-# signature and request
-url_path = urlparse(URI).path
-message = TIMESTAMP + METHOD + url_path + json.dumps(payload)
+url_path = urlparse(uri).path
+message = timestamp + method + url_path + json.dumps(payload)
 signature = hmac.digest(SECRET_KEY.encode('utf-8'), message.encode('utf-8'), hashlib.sha256)
 signature_b64 = base64.b64encode(signature)
 
 headers = {
    'X-CB-ACCESS-SIGNATURE': signature_b64,
-   'X-CB-ACCESS-TIMESTAMP': TIMESTAMP,
+   'X-CB-ACCESS-timestamp': timestamp,
    'X-CB-ACCESS-KEY': API_KEY,
    'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
    'Accept': 'application/json'
 }
-response = requests.post(URI, json=payload, headers=headers)
+response = requests.post(uri, json=payload, headers=headers)
 parsed_response = json.loads(response.text)
 print(json.dumps(parsed_response, indent=3))

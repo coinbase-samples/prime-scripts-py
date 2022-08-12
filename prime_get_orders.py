@@ -22,25 +22,23 @@ PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
 product_id = 'ETH-USD'
-URI = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/orders?product_ids={product_id}&sort_direction=DESC'
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/orders?product_ids={product_id}&sort_direction=DESC'
+timestamp = str(int(time.time()))
+method = 'GET'
 
-TIMESTAMP = str(int(time.time()))
-METHOD = 'GET'
-
-# signature and request
-url_path = urlparse(URI).path
-message = TIMESTAMP + METHOD + url_path
+url_path = urlparse(uri).path
+message = timestamp + method + url_path
 signature = hmac.digest(SECRET_KEY.encode('utf-8'), message.encode('utf-8'), hashlib.sha256)
 signature_b64 = base64.b64encode(signature)
 
 headers = {
    'X-CB-ACCESS-SIGNATURE': signature_b64,
-   'X-CB-ACCESS-TIMESTAMP': TIMESTAMP,
+   'X-CB-ACCESS-timestamp': timestamp,
    'X-CB-ACCESS-KEY': API_KEY,
    'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
    'Accept': 'application/json'
 }
 
-response = requests.get(URI, headers=headers)
+response = requests.get(uri, headers=headers)
 parsed_response = json.loads(response.text)
 print(json.dumps(parsed_response, indent=3))

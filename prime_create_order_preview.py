@@ -21,40 +21,37 @@ SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
-URI = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/order_preview'
-
-TIMESTAMP = str(int(time.time()))
-CLIENT_ORDER_ID = uuid.uuid4()
-METHOD = 'POST'
-
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/order_preview'
+timestamp = str(int(time.time()))
+client_order_id = uuid.uuid4()
+method = 'POST'
 product_id = 'ETH-USD'
 side = 'BUY'
 order_type = 'MARKET'
 base_quantity = '0.01'
 
 payload = {
-    'PORTFOLIO_ID': PORTFOLIO_ID,
+    'portfolio_id': PORTFOLIO_ID,
     'product_id': product_id,
-    'client_order_id': str(CLIENT_ORDER_ID),
+    'client_order_id': str(client_order_id),
     'side': side,
     'type': order_type,
     'base_quantity': base_quantity
 }
 
-# signature and request
-url_path = urlparse(URI).path
-message = TIMESTAMP + METHOD + url_path + json.dumps(payload)
+url_path = urlparse(uri).path
+message = timestamp + method + url_path + json.dumps(payload)
 signature = hmac.digest(SECRET_KEY.encode('utf-8'), message.encode('utf-8'), hashlib.sha256)
 signature_b64 = base64.b64encode(signature)
 
 headers = {
     'X-CB-ACCESS-SIGNATURE': signature_b64,
-    'X-CB-ACCESS-TIMESTAMP': TIMESTAMP,
+    'X-CB-ACCESS-timestamp': timestamp,
     'X-CB-ACCESS-KEY': API_KEY,
     'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
     'Accept': 'application/json'
 }
 
-response = requests.post(URI, json=payload, headers=headers)
+response = requests.post(uri, json=payload, headers=headers)
 parsed_response = json.loads(response.text)
 print(json.dumps(parsed_response,indent=3))
