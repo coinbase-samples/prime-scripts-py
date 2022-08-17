@@ -21,7 +21,7 @@ SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 ADDRESS = os.environ.get('BLOCKCHAIN_ADDRESS')
-NAME = os.environ.get('WALLET_NAME')+'_external'
+NAME = os.environ.get('ADDRESS_NAME')
 
 uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/address_book'
 timestamp = str(int(time.time()))
