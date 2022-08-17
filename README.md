@@ -26,6 +26,7 @@ export PORTFOLIO_ID=PORTFOLIO_ID_HERE
 export ORIGIN_WALLET_ID=ORIGIN_WALLET_ID_HERE
 export SVC_ACCOUNTID=SVC_ACCOUNTID_HERE
 export WALLET_NAME=WALLET_NAME_HERE
+export ADDRESS_NAME=$WALLET_NAME-external
 export BLOCKCHAIN_ADDRESS=0x000000000000000000000000000000$(date +"%s")
 echo "export PASSPHRASE='$PASSPHRASE'" >> ~/.bash_profile
 echo "export ACCESS_KEY='$ACCESS_KEY'" >> ~/.bash_profile
@@ -34,7 +35,8 @@ echo "export PORTFOLIO_ID='$PORTFOLIO_ID'" >> ~/.bash_profile
 echo "export ORIGIN_WALLET_ID='$ORIGIN_WALLET_ID'" >> ~/.bash_profile
 echo "export SVC_ACCOUNTID='$SVC_ACCOUNTID'" >> ~/.bash_profile
 echo "export WALLET_NAME='$WALLET_NAME'" >> ~/.bash_profile
-echo "export WALLET_NAME='$BLOCKCHAIN_ADDRESS'" >> ~/.bash_profile
+echo "export ADDRESS_NAME='ADDRESS_NAME'" >> ~/.bash_profile
+echo "export BLOCKCHAIN_ADDRESS='$BLOCKCHAIN_ADDRESS'" >> ~/.bash_profile
 ```
 
 ## Contributing
