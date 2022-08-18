@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import asyncio, base64, hashlib, hmac, json, os, sys, time, websockets
 
 PASSPHRASE = os.environ.get('PASSPHRASE')
@@ -28,7 +29,7 @@ async def main_loop():
     while True:
       try:
         async with websockets.connect(uri, ping_interval=None, max_size=None) as websocket:
-          signature = await sign(channel, ACCESS_KEY, SECRET_KEY, SVC_ACCOUNTID, PORTFOLIO_ID, product_id)
+          signature = sign(channel, ACCESS_KEY, SECRET_KEY, SVC_ACCOUNTID, PORTFOLIO_ID, product_id)
           auth_message = json.dumps({
               'type': 'subscribe',
               'channel': channel,
@@ -48,7 +49,7 @@ async def main_loop():
       except websockets.ConnectionClosed:
         continue
 
-async def sign(channel, key, secret, account_id, PORTFOLIO_ID, product_ids):
+def sign(channel, key, secret, account_id, PORTFOLIO_ID, product_ids):
     message = channel + key + account_id + timestamp + PORTFOLIO_ID + product_ids
     signature = hmac.digest(secret.encode('utf-8'), message.encode('utf-8'), hashlib.sha256)
     signature_b64 = base64.b64encode(signature).decode()
