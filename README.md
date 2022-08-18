@@ -11,7 +11,7 @@ All scripts are written in Python3 and have been tested with versions that are n
 Simply clone the repo to run scripts from your command line.
 
 ```bash
-git clone https://github.com/jc-cb/prime-workshop-scripts
+git clone https://github.com/coinbase-samples/prime-scripts-py
 ```
 
 The workshop itself details all dependencies you will need to install. However, if you are viewing this as a standalone, there are a few dependencies you'll need to install, as well as set several environmental variables:
