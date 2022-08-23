@@ -40,7 +40,7 @@ payload = {
 
 url_path = urlparse(uri).path
 message = timestamp + method + url_path + json.dumps(payload)
-signature = hmac.digest(SECRET_KEY.encode('utf-8'), message.encode('utf-8'), hashlib.sha256)
+signature = hmac.new(SECRET_KEY.encode('utf-8'), message.encode('utf-8'), digestmod=hashlib.sha256).digest()
 signature_b64 = base64.b64encode(signature)
 
 headers = {
