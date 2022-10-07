@@ -27,7 +27,7 @@ cd prime-scripts-py/FIX
 pip install quickfix-ssl
 ```
 
-2. If you are participating in a Coinbase Prime workshop for FIX, you may skip this step. If you are visiting our samples repository, you will need to provide these credentials yourself and set them as environment variables, then run the below code:
+2. If you are participating in a Coinbase Prime workshop for FIX, you may skip this step. If you are visiting our samples repository, you will need to generate these credentials yourself and place them over the values below (e.g. ACCESS_KEY_HERE), then run the below code:
 
 ```
 export ACCESS_KEY=ACCESS_KEY_HERE
