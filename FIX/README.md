@@ -9,10 +9,14 @@ designed for API testing & learning.
 
 ## 1. Clone the Github Repository and Open the Project in Pycharm
 
-1. Clone the repo using `$ git clone https://github.com/coinbase-samples/prime-scripts-py`
+1. Clone the repo using the following command from your Terminal window: 
+```
+git clone https://github.com/coinbase-samples/prime-scripts-py
+```
+
 2. Open project in IDE of your choice or navigate to the following folder directory from Terminal:  
 ```
-~/prime-scripts-py/FIX
+cd prime-scripts-py/FIX
 ```
 
 ## 2.  Configuration
