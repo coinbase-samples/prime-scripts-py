@@ -39,7 +39,7 @@ sed -i "s/YOUR_SERVICE_ACCOUNT_ID/$SVC_ACCOUNTID/" reosurces/client.cfg
 
 ## 3.  Running Your FIX Application
 
-1. Navigate to **fix/client.py** file in Pycharm or **/fix** folder if you are running this from the command line.
+1. Open the **client.py** file in Pycharm or **/FIX** folder if you are running this from the command line.
 2. If using an IDE such as Pycharm, press the **'Green Play Button'** next to the **if __name__=='__main__'** function. Otherwise, run the following command:
 ```
 python3 client.py resources/client.cfg
@@ -49,7 +49,7 @@ python3 client.py resources/client.cfg
 
 ## 4.  Message Types
 
-Navigate to **fix/model/order.py** to view and adjust the FIX order types for testing:
+Navigate to **model/order.py** to view and adjust the FIX order types for testing:
 
 - Market Buy/Sell (Base)
 - Market Buy/Sell (Quote)
