@@ -1,8 +1,6 @@
-# tam-prime-fix-api
+# Prime Fix Api
 
 ## Overview
-
-TAM Prime FIX API Test Suite
 
 This Repository is a Python FIX API Test Suite for Coinbase's Prime FIX APIs.  This Repository is
 designed for API testing & learning.
