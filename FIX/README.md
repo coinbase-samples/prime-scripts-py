@@ -34,7 +34,7 @@ export PORTFOLIO_ID=PORTFOLIO_ID_HERE
 3. Whether you are visiting our repository or participating in a Coinbase workshop, you will need to run the below:
 
 ```
-sed -i "s/YOUR_SERVICE_ACCOUNT_ID/$SVC_ACCOUNTID/" reosurces/client.cfg
+sed -i "s/YOUR_SERVICE_ACCOUNT_ID/$SVC_ACCOUNTID/" resources/client.cfg
 ```
 
 ## 3.  Running Your FIX Application
