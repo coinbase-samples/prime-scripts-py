@@ -12,36 +12,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json, hmac, hashlib, time, uuid, os, base64, requests
 from urllib.parse import urlparse
+import json, hmac, hashlib, time, uuid, os, base64, requests
 
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
-WALLET_NAME = os.environ.get('WALLET_NAME')
 
-uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets?type=VAULT&symbols=ETH'
+order_id = 'ORDER_ID_HERE'
+
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/order/{order_id}/cancel'
+
 timestamp = str(int(time.time()))
-idempotency_key = uuid.uuid4()
-method = 'GET'
+client_order_id = uuid.uuid4()
+method = 'POST'
+
+payload = {
+    'portfolio_id': PORTFOLIO_ID,
+    'order_id': order_id
+}
 
 url_path = urlparse(uri).path
-message = timestamp + method + url_path
+message = timestamp + method + url_path + json.dumps(payload)
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {
-   'X-CB-ACCESS-SIGNATURE': signature_b64,
-   'X-CB-ACCESS-timestamp': timestamp,
-   'X-CB-ACCESS-KEY': API_KEY,
-   'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
-   'Accept': 'application/json'
+    'X-CB-ACCESS-SIGNATURE': signature_b64,
+    'X-CB-ACCESS-timestamp': timestamp,
+    'X-CB-ACCESS-KEY': API_KEY,
+    'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
+    'Accept': 'application/json'
 }
-response = requests.get(uri, headers=headers)
-parsed_response = json.loads(response.text)
-wallets = parsed_response['wallets']
 
-for wallet in wallets:
-    if wallet['name'] == WALLET_NAME:
-        destination_wallet_id = wallet['id']
-        print(destination_wallet_id)
+response = requests.post(uri, json=payload, headers=headers)
+parsed_response = json.loads(response.text)
+print(json.dumps(parsed_response, indent=3))

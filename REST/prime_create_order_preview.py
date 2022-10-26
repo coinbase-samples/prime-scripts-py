@@ -20,6 +20,8 @@ SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
+print(API_KEY)
+
 uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/order_preview'
 timestamp = str(int(time.time()))
 client_order_id = uuid.uuid4()
@@ -40,8 +42,7 @@ payload = {
 
 url_path = urlparse(uri).path
 message = timestamp + method + url_path + json.dumps(payload)
-signature = hmac.new(SECRET_KEY.encode('utf-8'), message.encode('utf-8'), digestmod=hashlib.sha256).digest()
-signature_b64 = base64.b64encode(signature)
+signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {
     'X-CB-ACCESS-SIGNATURE': signature_b64,
