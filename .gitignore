@@ -9,3 +9,4 @@
 .idea
 .envrc
 .direnv/
+REST/.env
