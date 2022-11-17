@@ -1,6 +1,8 @@
 # Purpose
 
-The Prime Workshop Scripts repository is a collection of Python scripts meant to be used alongside the Coinbase Prime Workshop. These scripts cover common REST endpoints and WebSocket connections used in an introducing brokers-style integration with Prime APIs.
+This repository of Python scripts demonstrates various REST and WebSocket APIs supported by Coinbase Prime.
+
+While originally designed to power the Coinbase Prime Workshop, these scripts will work on their own with proper API credentials.
 
 Prime workshop link here: [https://prime.saworkshop.dev/](https://prime.saworkshop.dev/)
 
@@ -14,29 +16,20 @@ Simply clone the repo to run scripts from your command line.
 git clone https://github.com/coinbase-samples/prime-scripts-py
 ```
 
-The workshop itself details all dependencies you will need to install. However, if you are viewing this as a standalone, there are a few dependencies you'll need to install, as well as set several environmental variables:
+The two dependencies needed for these scripts are `requests` and `websockets`. This can be done easily with the following command:
 
 ```
 pip install -r requirements.txt
+```
 
+Finally, these scripts make use of command line environment variables so that sensitive information does not need to be included in the scripts themselves. Update the following information and run from your command line or choose your favorite method of storing sensitive information to proceed.
+
+```
 export ACCESS_KEY=ACCESS_KEY_HERE
 export PASSPHRASE=PASSPHRASE_HERE
 export SIGNING_KEY=SIGNING_KEY_HERE
 export PORTFOLIO_ID=PORTFOLIO_ID_HERE
-export ORIGIN_WALLET_ID=ORIGIN_WALLET_ID_HERE
 export SVC_ACCOUNTID=SVC_ACCOUNTID_HERE
-export WALLET_NAME=WALLET_NAME_HERE
-export ADDRESS_NAME=$WALLET_NAME-external
-export BLOCKCHAIN_ADDRESS=0x000000000000000000000000000000$(date +"%s")
-echo "export PASSPHRASE='$PASSPHRASE'" >> ~/.bash_profile
-echo "export ACCESS_KEY='$ACCESS_KEY'" >> ~/.bash_profile
-echo "export SIGNING_KEY='$SIGNING_KEY'" >> ~/.bash_profile
-echo "export PORTFOLIO_ID='$PORTFOLIO_ID'" >> ~/.bash_profile
-echo "export ORIGIN_WALLET_ID='$ORIGIN_WALLET_ID'" >> ~/.bash_profile
-echo "export SVC_ACCOUNTID='$SVC_ACCOUNTID'" >> ~/.bash_profile
-echo "export WALLET_NAME='$WALLET_NAME'" >> ~/.bash_profile
-echo "export ADDRESS_NAME='ADDRESS_NAME'" >> ~/.bash_profile
-echo "export BLOCKCHAIN_ADDRESS='$BLOCKCHAIN_ADDRESS'" >> ~/.bash_profile
 ```
 
 ## Contributing
