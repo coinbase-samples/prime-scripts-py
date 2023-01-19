@@ -20,6 +20,10 @@ import base64
 import hmac
 import hashlib
 from fix_session import FixSession
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 setup_logger('logfix', 'Logs/message.log')
 logfix = logging.getLogger('logfix')
@@ -27,12 +31,11 @@ logfix = logging.getLogger('logfix')
 class Application(fix.Application):
     """FIX Application"""
     config = configparser.RawConfigParser()
-    config.read('./fix/resources/prime.properties')
 
-    PASSPHRASE = str(config.get('session_1', 'passphrase'))
-    API_KEY = str(config.get('session_1', 'api_key'))
-    API_SECRET = str(config.get('session_1', 'api_secret'))
-    PORTFOLIO = str(config.get('session_1', 'portfolio'))
+    PASSPHRASE = str(os.environ.get('PASSPHRASE'))
+    API_KEY = str(os.environ.get('API_KEY'))
+    API_SECRET = str(os.environ.get('SECRET_KEY'))
+    PORTFOLIO = str(os.environ.get('PORTFOLIO_ID'))
 
     def onCreate(self, sessionID):
         """Function called upon FIX Application startup"""

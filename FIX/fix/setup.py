@@ -23,3 +23,12 @@ def create_header(portfolio_id, message_type):
     message.setField(fix.Account(portfolio_id))
     message.setField(fix.ClOrdID(str(uuid.uuid4())))
     return message
+
+def build_user_logout_message(fixSession, sessionID):
+    """Build Cancel Order Message (F) based-on user input"""
+    logout_message = fix.Message()
+    header = logout_message.getHeader()
+    header.setField(fix.MsgType(fix.MsgType_Logout))
+    fixSession.send_message(logout_message)
+    time.sleep(2)
+    sys.exit()

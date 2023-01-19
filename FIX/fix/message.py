@@ -13,8 +13,11 @@
 # limitations under the License.
 import logging
 import time
-from fix.order import collect_user_new_order_message, collect_user_get_order_status_message, collect_user_cancel_order_message, build_user_logout_message
 from fix.logger import setup_logger
+from fix.create_order import build_create_new_order_message
+from fix.get_order import get_order_status_message
+from fix.cancel_order import build_order_cancel
+from fix.setup import build_user_logout_message
 
 setup_logger('logfix', 'Logs/message.log')
 logfix = logging.getLogger('logfix')
@@ -30,11 +33,14 @@ def build_message(fixSession, sessionID):
                             '3: Cancel Order\n'
                             '4: Exit Application!\n'))
         if options == '1':
-            collect_user_new_order_message(fixSession)
+            #collect_user_new_order_message(fixSession)
+            build_create_new_order_message(fixSession)
         if options == '2':
-            collect_user_get_order_status_message(fixSession)
+            #collect_user_get_order_status_message(fixSession)
+            get_order_status_message(fixSession)
         if options == '3':
-            collect_user_cancel_order_message(fixSession)
+            #collect_user_cancel_order_message(fixSession)
+            build_order_cancel(fixSession)
         if options == '4':
             build_user_logout_message(fixSession, sessionID)
         else:

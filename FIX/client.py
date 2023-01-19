@@ -16,11 +16,11 @@ import argparse
 import quickfix
 from application import Application
 from config import Configuration
-import certifi
+# import certifi
 import configparser
 
 config = configparser.ConfigParser()
-config.read('fix/resources/prime.properties')
+
 
 def main():
     """Main"""
@@ -35,10 +35,10 @@ def main():
         initiator.start()
         application.run()
 
-    except (quickfix.ConfigError, quickfix.RuntimeError) as e:
+    except (quickfix.ConfigError, quickfix.RuntimeError):
+
         sys.exit()
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     main()
-
-
