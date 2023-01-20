@@ -14,20 +14,25 @@
 import configparser
 import quickfix as fix
 import logging
-from message import build_message
+import time
+from prime_fix_create_order import build_create_new_order_message
+from prime_fix_cancel_order import build_order_cancel
+from setup import build_user_logout_message
 from logger import setup_logger, format_message
+from setup import create_header
 import base64
 import hmac
 import hashlib
 from fix_session import FixSession
 import os
 from dotenv import load_dotenv
-from prime_fix_get_order import get_order_status_message
 
 load_dotenv()
 
 setup_logger('logfix', 'Logs/message.log')
 logfix = logging.getLogger('logfix')
+
+last_order_id = ''
 
 
 class Application(fix.Application):
@@ -38,6 +43,10 @@ class Application(fix.Application):
     API_KEY = str(os.environ.get('API_KEY'))
     API_SECRET = str(os.environ.get('SECRET_KEY'))
     PORTFOLIO = str(os.environ.get('PORTFOLIO_ID'))
+
+    def __init__(self):
+        super().__init__()
+        self.last_order_id = last_order_id
 
     def onCreate(self, sessionID):
         """Function called upon FIX Application startup"""
@@ -96,12 +105,21 @@ class Application(fix.Application):
             #     print('order_id: ' + str(order_id))
             order_id = response.split('37=', 1)[1][:36]
             print(order_id)
-            #self.orderID = order_id
-            #get_order_status_message(self.fixSession, order_id)
+            self.last_order_id = order_id
+
         except:
             print('no message')
         self.fixSession.on_message(message)
-        return order_id
+        return
+
+    def get_order_status_message(self,fixSession):
+        """Build Order Status Message (H) based-on user input"""
+
+        message = create_header(fixSession.portfolio_id, fix.MsgType(fix.MsgType_OrderStatusRequest))
+        message.setField(fix.OrderID(self.last_order_id))
+
+        fixSession.send_message(message)
+        logfix.info('Done: Retrieved Order Status \n')
 
     def sign(self, t, msg_type, seq_num, access_key, target_comp_id, passphrase):
         """Function to Generate Authentication Signature"""
@@ -111,7 +129,29 @@ class Application(fix.Application):
         sign_b64 = base64.b64encode(signature.digest()).decode()
         return sign_b64
 
+    def build_message(self, fixSession, sessionID):
+        """Construct FIX Message based on User Input"""
+        while True:
+            time.sleep(1)
+            options = str(input('Please choose one of the following: \n'
+                                '1: Place New Order\n'
+                                '2: Get Order Status\n'
+                                '3: Cancel Order\n'
+                                '4: Exit Application!\n'))
+            if options == '1':
+                clorid = build_create_new_order_message(fixSession)
+            if options == '2':
+                self.get_order_status_message(fixSession)
+            if options == '3':
+                build_order_cancel(fixSession)
+            if options == '4':
+                build_user_logout_message(fixSession, sessionID)
+            else:
+                time.sleep(2)
+
     def run(self):
         """Run Application"""
-        build_message(self.fixSession, self.sessionID)
+        self.build_message(self.fixSession, self.sessionID)
+
+
 
