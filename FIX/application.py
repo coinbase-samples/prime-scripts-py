@@ -95,12 +95,13 @@ class Application(fix.Application):
             #     order_id = response.split('37=', 1)[1][:36]
             #     print('order_id: ' + str(order_id))
             order_id = response.split('37=', 1)[1][:36]
+            print(order_id)
             #self.orderID = order_id
             #get_order_status_message(self.fixSession, order_id)
         except:
             print('no message')
         self.fixSession.on_message(message)
-        return
+        return order_id
 
     def sign(self, t, msg_type, seq_num, access_key, target_comp_id, passphrase):
         """Function to Generate Authentication Signature"""

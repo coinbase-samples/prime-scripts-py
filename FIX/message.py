@@ -22,6 +22,7 @@ from setup import build_user_logout_message
 setup_logger('logfix', 'Logs/message.log')
 logfix = logging.getLogger('logfix')
 
+
 def build_message(fixSession, sessionID):
     """Construct FIX Message based on User Input"""
     clorid = ''
@@ -35,7 +36,7 @@ def build_message(fixSession, sessionID):
         if options == '1':
             clorid = build_create_new_order_message(fixSession)
         if options == '2':
-            get_order_status_message(fixSession,clorid)
+            get_order_status_message(fixSession)
         if options == '3':
             build_order_cancel(fixSession)
         if options == '4':

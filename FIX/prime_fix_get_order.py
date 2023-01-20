@@ -23,7 +23,7 @@ setup_logger('logfix', 'Logs/message.log')
 logfix = logging.getLogger('logfix')
 
 
-def get_order_status_message(fixSession,order_id):
+def get_order_status_message(fixSession):
     """Build Order Status Message (H) based-on user input"""
 
     # order_id = '3e4062e3-0813-4662-9825-9ad3e1879ee6'
