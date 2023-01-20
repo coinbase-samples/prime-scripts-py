@@ -17,6 +17,7 @@ import sys
 import time
 import uuid
 
+
 def create_header(portfolio_id, message_type):
     """Build FIX Message Header"""
     message = fix.Message()
