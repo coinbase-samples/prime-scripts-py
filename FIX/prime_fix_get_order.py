@@ -15,6 +15,9 @@ import logging
 import quickfix as fix
 from logger import setup_logger
 from setup import create_header
+# from application import Application
+# application = Application()
+
 
 setup_logger('logfix', 'Logs/message.log')
 logfix = logging.getLogger('logfix')

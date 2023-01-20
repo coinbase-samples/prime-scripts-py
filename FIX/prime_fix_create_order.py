@@ -63,3 +63,8 @@ def build_create_new_order_message(fixSession):
     logfix.info("Submitting Order...")
     fixSession.send_message(message)
     logfix.info('Done: Put New Order\n')
+    response = str(message)
+    orig_client_order_id = response.split('11=', 1)[1][:36]
+    print('clorid: ' + str(orig_client_order_id))
+    return orig_client_order_id
+

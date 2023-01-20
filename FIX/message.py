@@ -24,7 +24,7 @@ logfix = logging.getLogger('logfix')
 
 def build_message(fixSession, sessionID):
     """Construct FIX Message based on User Input"""
-
+    clorid = ''
     while True:
         time.sleep(1)
         options = str(input('Please choose one of the following: \n'
@@ -33,9 +33,9 @@ def build_message(fixSession, sessionID):
                             '3: Cancel Order\n'
                             '4: Exit Application!\n'))
         if options == '1':
-            build_create_new_order_message(fixSession)
+            clorid = build_create_new_order_message(fixSession)
         if options == '2':
-            get_order_status_message(fixSession)
+            get_order_status_message(fixSession,clorid)
         if options == '3':
             build_order_cancel(fixSession)
         if options == '4':

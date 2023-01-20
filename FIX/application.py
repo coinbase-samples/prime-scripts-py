@@ -22,6 +22,7 @@ import hashlib
 from fix_session import FixSession
 import os
 from dotenv import load_dotenv
+from prime_fix_get_order import get_order_status_message
 
 load_dotenv()
 
@@ -80,22 +81,26 @@ class Application(fix.Application):
     def toApp(self, message, sessionID):
         """Function called for outbound Application Messages"""
         logfix.info('(App) S >> %s' % format_message(message))
+
         return
 
     def fromApp(self, message, sessionID):
         """Function called for inbound Application Messages"""
         logfix.info('(App) R << %s' % format_message(message))
-        try:
-            response = str(message)
-            order_id = response.split('37=', 1)[1][:36]
-            client_order_id = response.split('11=', 1)[1][:36]
-            print('order_id: ' + str(order_id))
-            print('client_order_id: ' + str(client_order_id))
+        response = str(message)
 
+        try:
+            #client_order_id = response.split('11=', 1)[1][:36]
+            #if client_order_id == orig_client_order_id:
+            #     order_id = response.split('37=', 1)[1][:36]
+            #     print('order_id: ' + str(order_id))
+            order_id = response.split('37=', 1)[1][:36]
+            #self.orderID = order_id
+            #get_order_status_message(self.fixSession, order_id)
         except:
             print('no message')
         self.fixSession.on_message(message)
-        return order_id
+        return
 
     def sign(self, t, msg_type, seq_num, access_key, target_comp_id, passphrase):
         """Function to Generate Authentication Signature"""
@@ -108,3 +113,4 @@ class Application(fix.Application):
     def run(self):
         """Run Application"""
         build_message(self.fixSession, self.sessionID)
+
