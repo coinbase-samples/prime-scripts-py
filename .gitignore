@@ -13,3 +13,4 @@ FIX/Sessions
 __pycache__/
 *.pyc
 *.pyo
+FIX/example.cfg
