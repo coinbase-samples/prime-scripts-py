@@ -14,8 +14,8 @@
 import configparser
 import quickfix as fix
 import logging
-from fix.message import build_message
-from fix.logger import setup_logger, format_message
+from message import build_message
+from logger import setup_logger, format_message
 import base64
 import hmac
 import hashlib
@@ -27,6 +27,7 @@ load_dotenv()
 
 setup_logger('logfix', 'Logs/message.log')
 logfix = logging.getLogger('logfix')
+
 
 class Application(fix.Application):
     """FIX Application"""
@@ -84,8 +85,17 @@ class Application(fix.Application):
     def fromApp(self, message, sessionID):
         """Function called for inbound Application Messages"""
         logfix.info('(App) R << %s' % format_message(message))
+        try:
+            response = str(message)
+            order_id = response.split('37=', 1)[1][:36]
+            client_order_id = response.split('11=', 1)[1][:36]
+            print('order_id: ' + str(order_id))
+            print('client_order_id: ' + str(client_order_id))
+
+        except:
+            print('no message')
         self.fixSession.on_message(message)
-        return
+        return order_id
 
     def sign(self, t, msg_type, seq_num, access_key, target_comp_id, passphrase):
         """Function to Generate Authentication Signature"""

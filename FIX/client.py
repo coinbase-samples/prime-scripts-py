@@ -16,7 +16,6 @@ import argparse
 import quickfix
 from application import Application
 from config import Configuration
-# import certifi
 import configparser
 
 config = configparser.ConfigParser()

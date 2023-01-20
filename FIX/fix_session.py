@@ -13,7 +13,7 @@
 # limitations under the License.
 import logging
 import quickfix as fix
-from fix.logger import setup_logger
+from logger import setup_logger
 
 setup_logger('logfix', 'Logs/message.log')
 logfix = logging.getLogger('logfix')

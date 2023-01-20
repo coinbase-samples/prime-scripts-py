@@ -13,16 +13,17 @@
 # limitations under the License.
 import logging
 import quickfix as fix
-from fix.logger import setup_logger
-from fix.setup import create_header
+from logger import setup_logger
+from setup import create_header
 
 setup_logger('logfix', 'Logs/message.log')
 logfix = logging.getLogger('logfix')
 
-def get_order_status_message(fixSession):
+
+def get_order_status_message(fixSession,order_id):
     """Build Order Status Message (H) based-on user input"""
 
-    order_id = '3e4062e3-0813-4662-9825-9ad3e1879ee6'
+    # order_id = '3e4062e3-0813-4662-9825-9ad3e1879ee6'
 
     message = create_header(fixSession.portfolio_id, fix.MsgType(fix.MsgType_OrderStatusRequest))
     message.setField(fix.OrderID(order_id))
