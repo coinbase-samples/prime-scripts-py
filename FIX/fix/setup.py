@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import quickfix as fix
+import sys
+import time
 import uuid
 
 def create_header(portfolio_id, message_type):

@@ -52,7 +52,7 @@ class Application(fix.Application):
 
     def onLogout(self, sessionID):
         """Function called upon Logout"""
-        logfix.info('Session (%s) logout !' % sessionID.toString())
+        logfix.info('Session (%s) logout!' % sessionID.toString())
         return
 
     def toAdmin(self, message, sessionID):
