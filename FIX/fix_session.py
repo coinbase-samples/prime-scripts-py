@@ -11,13 +11,30 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import logging
+
+import configparser
 import quickfix as fix
-from logger import setup_logger
+import logging
+import time
+from prime_fix_create_order import create_order
+from setup import build_user_logout_message
+from logger import setup_logger, format_message
+import base64
+import hmac
+import hashlib
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 setup_logger('logfix', 'Logs/message.log')
 logfix = logging.getLogger('logfix')
 
+last_order_id = ''
+last_client_order_id = ''
+last_product_id = ''
+last_side = ''
+last_quantity = ''
 
 class FixSession:
     """FIX Session"""
@@ -73,3 +90,115 @@ class FixSession:
             logfix.info('Order Status for {} : {}'.format(order_id, message))
         else:
             return
+
+
+class Application(fix.Application):
+    """FIX Application"""
+    config = configparser.RawConfigParser()
+
+    PASSPHRASE = str(os.environ.get('PASSPHRASE'))
+    API_KEY = str(os.environ.get('API_KEY'))
+    API_SECRET = str(os.environ.get('SECRET_KEY'))
+    PORTFOLIO = str(os.environ.get('PORTFOLIO_ID'))
+
+    def __init__(self):
+        super().__init__()
+        self.last_order_id = last_order_id
+        self.last_client_order_id = last_client_order_id
+        self.last_product_id = last_product_id
+        self.last_side = last_side
+        self.last_quantity = last_quantity
+
+    def onCreate(self, sessionID):
+        """Function called upon FIX Application startup"""
+        logfix.info('onCreate : Session (%s)' % sessionID.toString())
+        self.sessionID = sessionID
+        self.fixSession = FixSession(self.sessionID, self.PORTFOLIO)
+        return
+
+    def onLogon(self, sessionID):
+        """Function called upon Logon"""
+        logfix.info('---------------Successful Logon----------------')
+        self.sessionID = sessionID
+        return
+
+    def onLogout(self, sessionID):
+        """Function called upon Logout"""
+        logfix.info('Session (%s) logout!' % sessionID.toString())
+        return
+
+    def toAdmin(self, message, sessionID):
+        """Function called for all outbound Administrative Messages"""
+        if message.getHeader().getField(35) == 'A':
+            rawData = self.sign(message.getHeader().getField(52), message.getHeader().getField(35),
+                                message.getHeader().getField(34), self.API_KEY, message.getHeader().getField(56),
+                                self.PASSPHRASE)
+            message.setField(fix.StringField(554, self.PASSPHRASE))
+            message.setField(fix.StringField(96, rawData))
+            message.setField(fix.StringField(9407, self.API_KEY))
+            logfix.info('(Admin) S >> %s' % format_message(message))
+            return
+        else:
+            return
+
+    def fromAdmin(self, message, sessionID):
+        """Function called for all inbound Administrative Messages"""
+        if message.getHeader().getField(35) == 'A':
+            logfix.info('(Admin) R << %s' % format_message(message))
+        self.fixSession.on_message(message)
+        return
+
+    def toApp(self, message, sessionID):
+        """Function called for outbound Application Messages"""
+        logfix.info('(App) S >> %s' % format_message(message))
+
+        return
+
+    def fromApp(self, message, sessionID):
+        """Function called for inbound Application Messages"""
+        logfix.info('(App) R << %s' % format_message(message))
+        response = str(message)
+        try:
+            client_order_id = response.split('11=', 1)[1][:36]
+            order_id = response.split('37=', 1)[1][:36]
+            quantity = response[response.find('151=')+4:response.find('10=')]
+            side = response.split('54=', 1)[1][:1]
+            product_id = response[response.find('55=')+3:response.find('60=')]
+            self.last_order_id = order_id
+            self.last_client_order_id = client_order_id
+            self.last_quantity = quantity
+            self.last_side = side
+            self.last_product_id = product_id
+
+
+        except:
+            print('no message')
+        self.fixSession.on_message(message)
+        return
+
+    def sign(self, t, msg_type, seq_num, access_key, target_comp_id, passphrase):
+        """Function to Generate Authentication Signature"""
+        message = ''.join([t, msg_type, seq_num, access_key, target_comp_id, passphrase]).encode('utf-8')
+        hmac_key = self.API_SECRET
+        signature = hmac.new(hmac_key.encode('utf-8'), message, hashlib.sha256)
+        sign_b64 = base64.b64encode(signature.digest()).decode()
+        return sign_b64
+
+    def build_message(self, fixSession, sessionID):
+        """Construct FIX Message based on User Input"""
+        time.sleep(1)
+        create_order(fixSession)
+        time.sleep(3)
+        self.get_order(fixSession)
+        time.sleep(5)
+        self.cancel_order(fixSession)
+        time.sleep(5)
+        #build_user_logout_message(fixSession, sessionID)
+
+
+    def run(self):
+        """Run Application"""
+        self.build_message(self.fixSession, self.sessionID)
+
+
+

@@ -20,7 +20,7 @@ setup_logger('logfix', 'Logs/message.log')
 logfix = logging.getLogger('logfix')
 
 
-def build_create_new_order_message(fixSession):
+def create_order(fixSession):
     """Build NewOrderSingle (D) based-on user input"""
 
     product = 'ETH-USD'
@@ -28,43 +28,28 @@ def build_create_new_order_message(fixSession):
     side = 'BUY'  # BUY or SELL
     base_quantity = '0.0015'
     limit_price = '1001'  # None or e.g. '1000'
-    expire_time = None  # None or e.g. '20230123-03:52:24.824'
-
-    order = {
-        "product": product,
-        "order_type": order_type,
-        "order_side": side,
-        "base_quantity": base_quantity,
-        "limit_price": limit_price,
-        "expire_time": expire_time
-    }
 
     message = create_header(fixSession.portfolio_id, fix.MsgType(fix.MsgType_NewOrderSingle))
-    message.setField(fix.Symbol(order.get("product")))
+    message.setField(fix.Symbol(product))
 
-    if order.get("order_type") == 'MARKET':
+    if order_type == 'MARKET':
         message.setField(fix.OrdType(fix.OrdType_MARKET))
         message.setField(fix.TimeInForce('3'))
         message.setField(847, 'M')
-    elif order.get("order_type") == 'LIMIT':
+    elif order_type == 'LIMIT':
         message.setField(fix.OrdType(fix.OrdType_LIMIT))
         message.setField(fix.TimeInForce('1'))
         message.setField(847, 'L')
-        message.setField(fix.Price(float(order.get("limit_price"))))
-    if order.get("order_side") == 'BUY':
+        message.setField(fix.Price(float(limit_price)))
+    if side == 'BUY':
         message.setField(fix.Side(fix.Side_BUY))
     else:
         message.setField(fix.Side(fix.Side_SELL))
-    if order.get("base_quantity"):
-        message.setField(fix.OrderQty(float(order.get("base_quantity"))))
-    else:
-        message.setField(fix.CashOrderQty(float(order.get("cash_order_quantity"))))
+    message.setField(fix.OrderQty(float(base_quantity)))
 
     logfix.info("Submitting Order...")
     fixSession.send_message(message)
     logfix.info('Done: Put New Order\n')
     response = str(message)
-    orig_client_order_id = response.split('11=', 1)[1][:36]
-    print('clorid: ' + str(orig_client_order_id))
-    return orig_client_order_id
+    #orig_client_order_id = response.split('11=', 1)[1][:36]
 

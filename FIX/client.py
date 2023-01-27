@@ -14,9 +14,9 @@
 import sys, os
 import argparse
 import quickfix
-from application import Application
 from config import Configuration
 import configparser
+from orders import Orders
 
 config = configparser.ConfigParser()
 
@@ -26,13 +26,16 @@ def main():
     try:
         Configuration().build_config()
         settings = quickfix.SessionSettings('example.cfg', True)
-        application = Application()
+
+        orders_workshop = Orders()
+
         storefactory = quickfix.FileStoreFactory(settings)
         logfactory = quickfix.FileLogFactory(settings)
-        initiator = quickfix.SSLSocketInitiator(application, storefactory, settings, logfactory)
+        initiator = quickfix.SSLSocketInitiator(orders_workshop, storefactory, settings, logfactory)
 
         initiator.start()
-        application.run()
+        orders_workshop.run()
+
 
     except (quickfix.ConfigError, quickfix.RuntimeError):
 
