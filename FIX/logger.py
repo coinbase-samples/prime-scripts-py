@@ -15,6 +15,7 @@ import logging
 
 loggers = {}
 
+
 def setup_logger(logger_name, log_file, level=logging.INFO):
     global loggers
 
@@ -24,7 +25,9 @@ def setup_logger(logger_name, log_file, level=logging.INFO):
     else:
         lz = logging.getLogger(logger_name)
         lz.setLevel(level)
-        formatter = logging.Formatter('%(asctime)s.%(msecs)03d : %(message)s', datefmt='%Y-%m-%d,%H:%M:%S')
+        formatter = logging.Formatter(
+            '%(asctime)s.%(msecs)03d : %(message)s',
+            datefmt='%Y-%m-%d,%H:%M:%S')
         streamHandler = logging.StreamHandler()
         streamHandler.setFormatter(formatter)
         lz.addHandler(streamHandler)
@@ -36,5 +39,3 @@ def setup_logger(logger_name, log_file, level=logging.INFO):
 def format_message(message):
     msg = message.toString().replace('\u0001', '|')
     return msg
-
-

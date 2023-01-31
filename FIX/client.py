@@ -11,8 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import sys, os
-import argparse
+import sys
 import quickfix
 from config import Configuration
 import configparser
@@ -35,7 +34,6 @@ def main():
 
         initiator.start()
         orders_workshop.run()
-
 
     except (quickfix.ConfigError, quickfix.RuntimeError):
 

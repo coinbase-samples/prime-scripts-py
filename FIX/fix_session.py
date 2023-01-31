@@ -16,13 +16,14 @@ import configparser
 import quickfix as fix
 import logging
 import time
-from prime_fix_create_order import create_order
-from setup import build_user_logout_message
 from logger import setup_logger, format_message
 import base64
 import hmac
+import uuid
 import hashlib
 import os
+import sys
+import queue
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -108,6 +109,16 @@ class Application(fix.Application):
         self.last_product_id = last_product_id
         self.last_side = last_side
         self.last_quantity = last_quantity
+        self.q = queue.Queue()
+
+    def create_header(self, portfolio_id, message_type):
+        """Build FIX Message Header"""
+        message = fix.Message()
+        header = message.getHeader()
+        header.setField(message_type)
+        message.setField(fix.Account(portfolio_id))
+        message.setField(fix.ClOrdID(str(uuid.uuid4())))
+        return message
 
     def onCreate(self, sessionID):
         """Function called upon FIX Application startup"""
@@ -161,15 +172,25 @@ class Application(fix.Application):
         try:
             client_order_id = response.split('11=', 1)[1][:36]
             order_id = response.split('37=', 1)[1][:36]
-            quantity = response[response.find('151=')+4:response.find('10=')]
+            quantity = response[response.find('151=') + 4:response.find('10=')]
+            quantity = bytes(quantity, 'utf-8').decode('utf-8', 'ignore')
             side = response.split('54=', 1)[1][:1]
-            product_id = response[response.find('55=')+3:response.find('60=')]
+            if '60=' in response:
+                product_id = response[response.find('55=') + 3:response.find('60=')]
+            else:
+                product_id = response[response.find('55=') + 3:response.find('78=')]
             self.last_order_id = order_id
             self.last_client_order_id = client_order_id
-            self.last_quantity = quantity
+            self.last_quantity = quantity.translate(dict.fromkeys(range(32)))
             self.last_side = side
-            self.last_product_id = product_id
-
+            self.last_product_id = product_id.translate(dict.fromkeys(range(32)))
+            if self.q.empty():
+                self.q.put(self.last_order_id)
+                self.q.put(self.last_order_id)
+                self.q.put(self.last_client_order_id)
+                self.q.put(self.last_quantity)
+                self.q.put(self.last_side)
+                self.q.put(self.last_product_id)
 
         except:
             print('no message')
@@ -187,18 +208,24 @@ class Application(fix.Application):
     def build_message(self, fixSession, sessionID):
         """Construct FIX Message based on User Input"""
         time.sleep(1)
-        create_order(fixSession)
-        time.sleep(3)
+        self.create_order(fixSession)
+        time.sleep(1)
         self.get_order(fixSession)
-        time.sleep(5)
+        time.sleep(1)
         self.cancel_order(fixSession)
-        time.sleep(5)
-        #build_user_logout_message(fixSession, sessionID)
+        time.sleep(3)
+        self.build_user_logout_message(fixSession, sessionID)
 
+    def build_user_logout_message(self, fixSession, sessionID):
+        """Build Cancel Order Message (F) based-on user input"""
+        logout_message = fix.Message()
+        header = logout_message.getHeader()
+        header.setField(fix.MsgType(fix.MsgType_Logout))
+        fixSession.send_message(logout_message)
+        time.sleep(2)
+        sys.exit()
 
     def run(self):
         """Run Application"""
         self.build_message(self.fixSession, self.sessionID)
-
-
 
