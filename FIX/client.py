@@ -13,7 +13,7 @@
 # limitations under the License.
 import sys
 import quickfix
-from config import Configuration
+from fix_session import Configuration
 import configparser
 from orders import Orders
 
