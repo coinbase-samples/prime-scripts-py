@@ -1,10 +1,20 @@
-from logger import setup_logger
-import logging
+# Copyright 2022 Coinbase Global, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+import os
 import quickfix as fix
-from fix_session import Application
-
-setup_logger('logfix', 'Logs/message.log')
-logfix = logging.getLogger('logfix')
+from Model.configuration import create_header
+from Model.fix_session import Application
 
 
 class Orders(Application):
@@ -18,7 +28,7 @@ class Orders(Application):
         base_quantity = '0.0015'
         limit_price = '1001'
 
-        message = self.create_header(fixSession.portfolio_id, fix.MsgType(fix.MsgType_NewOrderSingle))
+        message = create_header(fixSession.portfolio_id, fix.MsgType(fix.MsgType_NewOrderSingle))
         message.setField(fix.Symbol(product))
 
         if order_type == 'MARKET':
@@ -36,28 +46,26 @@ class Orders(Application):
             message.setField(fix.Side(fix.Side_SELL))
         message.setField(fix.OrderQty(float(base_quantity)))
 
-        logfix.info("Submitting Order...!!")
         fixSession.send_message(message)
-        logfix.info('Done: Put New Order!!\n')
 
     def get_order(self,fixSession):
         """Build Order Status Message (H) based-on user input"""
-        last_order_id = self.q.get()
+        order_id = os.environ.get('FIX_ORDER_ID')
 
-        message = self.create_header(fixSession.portfolio_id, fix.MsgType(fix.MsgType_OrderStatusRequest))
-        message.setField(fix.OrderID(last_order_id))
+        message = create_header(fixSession.portfolio_id, fix.MsgType(fix.MsgType_OrderStatusRequest))
+        message.setField(fix.OrderID(order_id))
 
         fixSession.send_message(message)
-        logfix.info('Done: Retrieved Order Status!! \n')
 
     def cancel_order(self,fixSession):
-        order_id = self.q.get(self.last_order_id)
-        client_order_id = self.q.get(self.last_client_order_id)
-        base_quantity = self.q.get(self.last_quantity)
-        side = self.q.get(self.last_side)
-        product = self.q.get(self.last_product_id)
+        """Cancel order based off order submitted by this client"""
+        order_id = os.environ.get('FIX_ORDER_ID')
+        client_order_id = os.environ.get('FIX_CLIENT_ORDER_ID')
+        base_quantity = os.environ.get('FIX_QUANTITY')
+        side = os.environ.get('FIX_SIDE')
+        product = os.environ.get('FIX_PRODUCT_ID')
 
-        message = self.create_header(fixSession.portfolio_id, fix.MsgType(fix.MsgType_OrderCancelRequest))
+        message = create_header(fixSession.portfolio_id, fix.MsgType(fix.MsgType_OrderCancelRequest))
         message.setField(fix.OrderID(str(order_id)))
         message.setField(fix.OrigClOrdID(str(client_order_id)))
         message.setField(fix.Symbol(str(product)))
@@ -67,5 +75,4 @@ class Orders(Application):
             message.setField(fix.Side(fix.Side_SELL))
         message.setField(fix.OrderQty(float(base_quantity)))
         fixSession.send_message(message)
-        logfix.info('Done: submitted order cancellation!! \n')
 

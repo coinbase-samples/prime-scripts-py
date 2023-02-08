@@ -13,7 +13,7 @@
 # limitations under the License.
 import sys
 import quickfix
-from fix_session import Configuration
+from Model.configuration import Configuration
 import configparser
 from orders import Orders
 
@@ -33,7 +33,7 @@ def main():
         initiator = quickfix.SSLSocketInitiator(orders_workshop, storefactory, settings, logfactory)
 
         initiator.start()
-        orders_workshop.run()
+        orders_workshop.run_create_order()
 
     except (quickfix.ConfigError, quickfix.RuntimeError):
 

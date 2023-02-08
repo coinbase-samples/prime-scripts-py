@@ -13,21 +13,18 @@
 # limitations under the License.
 
 import configparser
-import certifi
+# import certifi
 import quickfix as fix
 import logging
 import time
-from logger import setup_logger, format_message
+from Model.logger import setup_logger, format_message
 import base64
 import hmac
 import uuid
+import json
 import hashlib
 import os
 import sys
-import queue
-from dotenv import load_dotenv
-
-load_dotenv()
 
 setup_logger('logfix', 'Logs/message.log')
 logfix = logging.getLogger('logfix')
@@ -52,7 +49,7 @@ class FixSession:
     def on_message(self, message):
         """Process Application messages here"""
         if message.getHeader().getField(35) == '8' and '20=0' in str(message):
-            logfix.info('Received Execution Report: ')
+            # logfix.info('Received Execution Report: ')
             self.get_exec_type(message)
         elif message.getHeader().getField(35) == '3':
             if "58=" in str(message):
@@ -93,49 +90,6 @@ class FixSession:
             return
 
 
-class Configuration:
-    """FIX Configuration"""
-    BEGIN_STRING = str(os.environ.get('FIX_VERSION'))
-    SENDER_COMP_ID = str(os.environ.get('SVC_ACCOUNT_ID'))
-    TARGET_COMP_ID = str(os.environ.get('TARGET_COMP_ID'))
-    CLIENT_CERTIFICATE_KEY_FILE = str(certifi.where())
-
-    def __init__(self):
-        self.config = configparser.ConfigParser()
-
-    def build_config(self):
-        """Function to build example.cfg file for FIX Client"""
-        self.config['DEFAULT'] = {
-            'ConnectionType': 'initiator',
-            'FileLogPath': './Logs/',
-            'StartTime': '00:00:00',
-            'EndTime': '00:00:00',
-            'UseDataDictionary': 'N',
-            'ReconnectInterval': '10',
-            'ValidateUserDefinedFields': 'N',
-            'ValidateIncomingMessage': 'Y',
-            'ResetOnLogon': 'Y',
-            'ResetOnLogout': 'N',
-            'ResetOnDisconnect': 'Y',
-            'ClientCertificateKeyFile': self.CLIENT_CERTIFICATE_KEY_FILE,
-            'SSLEnable': 'Y',
-            'SSLProtocols': 'Tls12',
-            'SocketConnectPort': '4198'
-        }
-
-        self.config['SESSION'] = {
-            'BeginString': self.BEGIN_STRING,
-            'SenderCompID': self.SENDER_COMP_ID,
-            'TargetCompID': self.TARGET_COMP_ID,
-            'HeartBtInt': '30',
-            'SocketConnectHost': 'fix.prime.coinbase.com',
-            'FileStorePath': './Sessions/'
-        }
-
-        with open('example.cfg', 'w') as configfile:
-            self.config.write(configfile)
-
-
 class Application(fix.Application):
     """FIX Application"""
     config = configparser.RawConfigParser()
@@ -152,16 +106,8 @@ class Application(fix.Application):
         self.last_product_id = last_product_id
         self.last_side = last_side
         self.last_quantity = last_quantity
-        self.q = queue.Queue()
+        self.firstRun = True
 
-    def create_header(self, portfolio_id, message_type):
-        """Build FIX Message Header"""
-        message = fix.Message()
-        header = message.getHeader()
-        header.setField(message_type)
-        message.setField(fix.Account(portfolio_id))
-        message.setField(fix.ClOrdID(str(uuid.uuid4())))
-        return message
 
     def onCreate(self, sessionID):
         """Function called upon FIX Application startup"""
@@ -178,7 +124,7 @@ class Application(fix.Application):
 
     def onLogout(self, sessionID):
         """Function called upon Logout"""
-        logfix.info('Session (%s) logout!' % sessionID.toString())
+        #logfix.info('Session (%s) logout!' % sessionID.toString())
         return
 
     def toAdmin(self, message, sessionID):
@@ -205,35 +151,32 @@ class Application(fix.Application):
     def toApp(self, message, sessionID):
         """Function called for outbound Application Messages"""
         logfix.info('(App) S >> %s' % format_message(message))
-
+        self.last_client_order_id = message.getField(11)
         return
 
     def fromApp(self, message, sessionID):
         """Function called for inbound Application Messages"""
         logfix.info('(App) R << %s' % format_message(message))
-        response = str(message)
+
         try:
-            client_order_id = response.split('11=', 1)[1][:36]
-            order_id = response.split('37=', 1)[1][:36]
-            quantity = response[response.find('151=') + 4:response.find('10=')]
-            quantity = bytes(quantity, 'utf-8').decode('utf-8', 'ignore')
-            side = response.split('54=', 1)[1][:1]
-            if '60=' in response:
-                product_id = response[response.find('55=') + 3:response.find('60=')]
-            else:
-                product_id = response[response.find('55=') + 3:response.find('78=')]
-            self.last_order_id = order_id
-            self.last_client_order_id = client_order_id
-            self.last_quantity = quantity.translate(dict.fromkeys(range(32)))
-            self.last_side = side
-            self.last_product_id = product_id.translate(dict.fromkeys(range(32)))
-            if self.q.empty():
-                self.q.put(self.last_order_id)
-                self.q.put(self.last_order_id)
-                self.q.put(self.last_client_order_id)
-                self.q.put(self.last_quantity)
-                self.q.put(self.last_side)
-                self.q.put(self.last_product_id)
+            if message.getField(11) == self.last_client_order_id:
+                self.last_order_id = message.getField(37)
+                self.last_quantity = message.getField(151)
+                self.last_side = message.getField(54)
+                self.last_product_id = message.getField(55)
+
+                order_details = {
+                    'last_client_order_id': self.last_client_order_id,
+                    'last_order_id': self.last_order_id,
+                    'last_quantity': self.last_quantity,
+                    'last_side': self.last_side,
+                    'last_product_id': self.last_product_id
+                }
+
+                if self.firstRun:
+                    order_json = json.dumps(order_details)
+                    print(order_json)
+                    self.firstRun = False
 
         except:
             print('no message')
@@ -248,12 +191,22 @@ class Application(fix.Application):
         sign_b64 = base64.b64encode(signature.digest()).decode()
         return sign_b64
 
-    def build_message(self, fixSession, sessionID):
+    def build_create_order(self, fixSession, sessionID):
         """Construct FIX Message based on User Input"""
         time.sleep(1)
         self.create_order(fixSession)
+        time.sleep(3)
+        self.logout(fixSession, sessionID)
+
+    def build_get_order(self, fixSession, sessionID):
+        """Construct FIX Message based on User Input"""
         time.sleep(1)
         self.get_order(fixSession)
+        time.sleep(3)
+        self.logout(fixSession, sessionID)
+
+    def build_cancel_order(self, fixSession, sessionID):
+        """Construct FIX Message based on User Input"""
         time.sleep(1)
         self.cancel_order(fixSession)
         time.sleep(3)
@@ -268,7 +221,15 @@ class Application(fix.Application):
         time.sleep(2)
         sys.exit()
 
-    def run(self):
+    def run_create_order(self):
         """Run Application"""
-        self.build_message(self.fixSession, self.sessionID)
+        self.build_create_order(self.fixSession, self.sessionID)
+
+    def run_get_order(self):
+        """Run Application"""
+        self.build_get_order(self.fixSession, self.sessionID)
+
+    def run_cancel_order(self):
+        """Run Application"""
+        self.build_cancel_order(self.fixSession, self.sessionID)
 

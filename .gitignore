@@ -7,7 +7,6 @@
 .envrc
 .direnv/
 REST/.env
-FIX/.env
 FIX/Logs
 FIX/Sessions
 __pycache__/
