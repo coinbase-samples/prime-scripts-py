@@ -15,24 +15,25 @@ import sys
 import quickfix
 from Model.configuration import Configuration
 import configparser
-from Build.build_cancel import BuildCancel
+from build_get_order import BuildGet
 
 config = configparser.ConfigParser()
 
 
 def main():
+    """Main"""
     try:
         Configuration().build_config()
         settings = quickfix.SessionSettings('example.cfg', True)
 
-        build = BuildCancel()
+        build = BuildGet()
 
         storefactory = quickfix.FileStoreFactory(settings)
         logfactory = quickfix.FileLogFactory(settings)
         initiator = quickfix.SSLSocketInitiator(build, storefactory, settings, logfactory)
 
         initiator.start()
-        build.run_cancel_order()
+        build.run_get_order()
 
     except (quickfix.ConfigError, quickfix.RuntimeError):
 

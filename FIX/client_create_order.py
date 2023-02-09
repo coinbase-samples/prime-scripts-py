@@ -15,7 +15,7 @@ import sys
 import quickfix
 from Model.configuration import Configuration
 import configparser
-from Build.build_get import BuildGet
+from build_create_order import BuildCreate
 
 config = configparser.ConfigParser()
 
@@ -26,14 +26,14 @@ def main():
         Configuration().build_config()
         settings = quickfix.SessionSettings('example.cfg', True)
 
-        build = BuildGet()
+        build = BuildCreate()
 
         storefactory = quickfix.FileStoreFactory(settings)
         logfactory = quickfix.FileLogFactory(settings)
         initiator = quickfix.SSLSocketInitiator(build, storefactory, settings, logfactory)
 
         initiator.start()
-        build.run_get_order()
+        build.run_create_order()
 
     except (quickfix.ConfigError, quickfix.RuntimeError):
 
