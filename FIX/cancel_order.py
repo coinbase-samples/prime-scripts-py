@@ -15,7 +15,7 @@ import sys
 import quickfix
 from Model.configuration import Configuration
 import configparser
-from build_cancel import BuildCancel
+from Build.build_cancel import BuildCancel
 
 config = configparser.ConfigParser()
 
