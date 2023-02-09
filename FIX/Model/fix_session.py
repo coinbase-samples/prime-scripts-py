@@ -36,7 +36,6 @@ last_side = ''
 last_quantity = ''
 
 class FixSession:
-    """FIX Session"""
 
     def __init__(self, session_id, portfolio_id):
         self.session_id = session_id
@@ -91,7 +90,7 @@ class FixSession:
 
 
 class Application(fix.Application):
-    """FIX Application"""
+
     config = configparser.RawConfigParser()
 
     PASSPHRASE = str(os.environ.get('PASSPHRASE'))
@@ -107,7 +106,6 @@ class Application(fix.Application):
         self.last_side = last_side
         self.last_quantity = last_quantity
         self.firstRun = True
-
 
     def onCreate(self, sessionID):
         """Function called upon FIX Application startup"""

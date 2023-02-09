@@ -19,7 +19,6 @@ import uuid
 
 
 def create_header(portfolio_id, message_type):
-    """Build FIX Message Header"""
     message = fix.Message()
     header = message.getHeader()
     header.setField(message_type)
@@ -29,7 +28,6 @@ def create_header(portfolio_id, message_type):
 
 
 class Configuration:
-    """FIX Configuration"""
     BEGIN_STRING = str(os.environ.get('FIX_VERSION'))
     SENDER_COMP_ID = str(os.environ.get('SVC_ACCOUNT_ID'))
     TARGET_COMP_ID = str(os.environ.get('TARGET_COMP_ID'))
