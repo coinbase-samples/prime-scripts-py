@@ -10,11 +10,10 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License.
+# limitations under the License.python c
 import os
 import quickfix as fix
-from Model.configuration import create_header
-from Model.fix_session import Application
+from application.fix_session import Application
 
 
 class BuildCancel(Application):
@@ -26,7 +25,7 @@ class BuildCancel(Application):
         side = os.environ.get('FIX_SIDE')
         product = os.environ.get('FIX_PRODUCT_ID')
 
-        message = create_header(fixSession.portfolio_id, fix.MsgType(fix.MsgType_OrderCancelRequest))
+        message = self.create_header(fixSession.portfolio_id, fix.MsgType(fix.MsgType_OrderCancelRequest))
         message.setField(fix.OrderID(str(order_id)))
         message.setField(fix.OrigClOrdID(str(client_order_id)))
         message.setField(fix.Symbol(str(product)))

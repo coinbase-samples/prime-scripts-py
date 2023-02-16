@@ -13,11 +13,8 @@
 # limitations under the License.
 import sys
 import quickfix
-from Model.configuration import Configuration
-import configparser
+from application.configuration import Configuration
 from build_get_order import BuildGet
-
-config = configparser.ConfigParser()
 
 
 def main():

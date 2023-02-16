@@ -13,11 +13,10 @@
 # limitations under the License.
 
 import configparser
-# import certifi
 import quickfix as fix
 import logging
 import time
-from Model.logger import setup_logger, format_message
+from application.logger import setup_logger, format_message
 import base64
 import hmac
 import uuid
@@ -26,7 +25,7 @@ import hashlib
 import os
 import sys
 
-setup_logger('logfix', 'Logs/message.log')
+setup_logger('logfix')
 logfix = logging.getLogger('logfix')
 
 last_order_id = ''
@@ -34,6 +33,7 @@ last_client_order_id = ''
 last_product_id = ''
 last_side = ''
 last_quantity = ''
+
 
 class FixSession:
 
@@ -48,7 +48,6 @@ class FixSession:
     def on_message(self, message):
         """Process Application messages here"""
         if message.getHeader().getField(35) == '8' and '20=0' in str(message):
-            # logfix.info('Received Execution Report: ')
             self.get_exec_type(message)
         elif message.getHeader().getField(35) == '3':
             if "58=" in str(message):
@@ -94,8 +93,8 @@ class Application(fix.Application):
     config = configparser.RawConfigParser()
 
     PASSPHRASE = str(os.environ.get('PASSPHRASE'))
-    API_KEY = str(os.environ.get('API_KEY'))
-    API_SECRET = str(os.environ.get('SECRET_KEY'))
+    API_KEY = str(os.environ.get('ACCESS_KEY'))
+    API_SECRET = str(os.environ.get('SIGNING_KEY'))
     PORTFOLIO = str(os.environ.get('PORTFOLIO_ID'))
 
     def __init__(self):
@@ -189,25 +188,33 @@ class Application(fix.Application):
         sign_b64 = base64.b64encode(signature.digest()).decode()
         return sign_b64
 
+    def create_header(self, portfolio_id, message_type):
+        message = fix.Message()
+        header = message.getHeader()
+        header.setField(message_type)
+        message.setField(fix.Account(portfolio_id))
+        message.setField(fix.ClOrdID(str(uuid.uuid4())))
+        return message
+
     def build_create_order(self, fixSession, sessionID):
         """Construct FIX Message based on User Input"""
-        time.sleep(1)
-        self.create_order(fixSession)
         time.sleep(3)
+        self.create_order(fixSession)
+        time.sleep(10)
         self.logout(fixSession, sessionID)
 
     def build_get_order(self, fixSession, sessionID):
         """Construct FIX Message based on User Input"""
-        time.sleep(1)
-        self.get_order(fixSession)
         time.sleep(3)
+        self.get_order(fixSession)
+        time.sleep(10)
         self.logout(fixSession, sessionID)
 
     def build_cancel_order(self, fixSession, sessionID):
         """Construct FIX Message based on User Input"""
-        time.sleep(1)
-        self.cancel_order(fixSession)
         time.sleep(3)
+        self.cancel_order(fixSession)
+        time.sleep(10)
         self.logout(fixSession, sessionID)
 
     def logout(self, fixSession, sessionID):

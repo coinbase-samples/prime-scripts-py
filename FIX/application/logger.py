@@ -16,7 +16,7 @@ import logging
 loggers = {}
 
 
-def setup_logger(logger_name, log_file, level=logging.INFO):
+def setup_logger(logger_name, level=logging.INFO):
     global loggers
 
     if loggers.get(logger_name):

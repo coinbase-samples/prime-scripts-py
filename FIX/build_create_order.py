@@ -11,10 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import os
 import quickfix as fix
-from Model.configuration import create_header
-from Model.fix_session import Application
+from application.fix_session import Application
 
 
 class BuildCreate(Application):
@@ -27,7 +25,7 @@ class BuildCreate(Application):
         base_quantity = '0.0015'
         limit_price = '1001'
 
-        message = create_header(fixSession.portfolio_id, fix.MsgType(fix.MsgType_NewOrderSingle))
+        message = self.create_header(fixSession.portfolio_id, fix.MsgType(fix.MsgType_NewOrderSingle))
         message.setField(fix.Symbol(product))
 
         if order_type == 'MARKET':

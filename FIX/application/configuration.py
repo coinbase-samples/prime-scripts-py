@@ -14,22 +14,11 @@
 import os
 import certifi
 import configparser
-import quickfix as fix
-import uuid
-
-
-def create_header(portfolio_id, message_type):
-    message = fix.Message()
-    header = message.getHeader()
-    header.setField(message_type)
-    message.setField(fix.Account(portfolio_id))
-    message.setField(fix.ClOrdID(str(uuid.uuid4())))
-    return message
 
 
 class Configuration:
     BEGIN_STRING = str(os.environ.get('FIX_VERSION'))
-    SENDER_COMP_ID = str(os.environ.get('SVC_ACCOUNT_ID'))
+    SENDER_COMP_ID = str(os.environ.get('SVC_ACCOUNTID'))
     TARGET_COMP_ID = str(os.environ.get('TARGET_COMP_ID'))
     CLIENT_CERTIFICATE_KEY_FILE = str(certifi.where())
 
@@ -40,7 +29,7 @@ class Configuration:
         """Function to build example.cfg file for FIX Client"""
         self.config['DEFAULT'] = {
             'ConnectionType': 'initiator',
-            'FileLogPath': './Logs/',
+            'FileLogPath': './logs/',
             'StartTime': '00:00:00',
             'EndTime': '00:00:00',
             'UseDataDictionary': 'N',
@@ -62,8 +51,8 @@ class Configuration:
             'TargetCompID': self.TARGET_COMP_ID,
             'HeartBtInt': '30',
             'SocketConnectHost': 'fix.prime.coinbase.com',
-            'FileStorePath': './Sessions/'
+            'FileStorePath': './sessions/'
         }
 
-        with open('../example.cfg', 'w') as configfile:
+        with open('example.cfg', 'w') as configfile:
             self.config.write(configfile)

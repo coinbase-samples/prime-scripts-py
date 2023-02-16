@@ -7,8 +7,8 @@
 .envrc
 .direnv/
 REST/.env
-FIX/Logs
-FIX/Sessions
+FIX/logs
+FIX/sessions
 __pycache__/
 *.pyc
 *.pyo

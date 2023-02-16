@@ -13,8 +13,7 @@
 # limitations under the License.
 import os
 import quickfix as fix
-from Model.configuration import create_header
-from Model.fix_session import Application
+from application.fix_session import Application
 
 
 class BuildGet(Application):
@@ -23,7 +22,7 @@ class BuildGet(Application):
         """Build Order Status Message (H) based-on user input"""
         order_id = os.environ.get('FIX_ORDER_ID')
 
-        message = create_header(fixSession.portfolio_id, fix.MsgType(fix.MsgType_OrderStatusRequest))
+        message = self.create_header(fixSession.portfolio_id, fix.MsgType(fix.MsgType_OrderStatusRequest))
         message.setField(fix.OrderID(order_id))
 
         fixSession.send_message(message)
