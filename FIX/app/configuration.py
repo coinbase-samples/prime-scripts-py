@@ -29,7 +29,7 @@ class Configuration:
         """Function to build example.cfg file for FIX Client"""
         self.config['DEFAULT'] = {
             'ConnectionType': 'initiator',
-            'FileLogPath': './logs/',
+            'FileLogPath': './.logs/',
             'StartTime': '00:00:00',
             'EndTime': '00:00:00',
             'UseDataDictionary': 'N',
@@ -51,7 +51,7 @@ class Configuration:
             'TargetCompID': self.TARGET_COMP_ID,
             'HeartBtInt': '30',
             'SocketConnectHost': 'fix.prime.coinbase.com',
-            'FileStorePath': './sessions/'
+            'FileStorePath': './.sessions/'
         }
 
         with open('example.cfg', 'w') as configfile:

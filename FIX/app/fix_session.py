@@ -139,7 +139,7 @@ class Application(fix.Application):
     def toApp(self, message, sessionID):
         """Function called for outbound Application Messages"""
         logfix.info('(App) S >> %s' % format_message(message))
-        self.last_client_order_id = message.getField(field_clorid)
+        self.last_client_order_id = message.getField(field_clordid)
         return
 
     def fromApp(self, message, sessionID):
@@ -147,7 +147,7 @@ class Application(fix.Application):
         logfix.info('(App) R << %s' % format_message(message))
 
         try:
-            if message.getField(field_clorid) == self.last_client_order_id:
+            if message.getField(field_clordid) == self.last_client_order_id:
                 self.last_order_id = message.getField(field_orderid)
                 self.last_quantity = message.getField(field_quantity)
                 self.last_side = message.getField(field_side)
