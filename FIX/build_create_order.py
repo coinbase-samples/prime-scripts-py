@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import quickfix as fix
-from application.fix_session import Application
+from app.fix_session import Application
 
 
 class BuildCreate(Application):

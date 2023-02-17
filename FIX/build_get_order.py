@@ -13,7 +13,7 @@
 # limitations under the License.
 import os
 import quickfix as fix
-from application.fix_session import Application
+from app.fix_session import Application
 
 
 class BuildGet(Application):

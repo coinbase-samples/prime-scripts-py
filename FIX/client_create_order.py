@@ -13,7 +13,7 @@
 # limitations under the License.
 import sys
 import quickfix
-from application.configuration import Configuration
+from app.configuration import Configuration
 import configparser
 from build_create_order import BuildCreate
 

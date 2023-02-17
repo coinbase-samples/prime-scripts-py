@@ -16,7 +16,6 @@ import configparser
 import quickfix as fix
 import logging
 import time
-from application.logger import setup_logger, format_message
 import base64
 import hmac
 import uuid
@@ -24,15 +23,11 @@ import json
 import hashlib
 import os
 import sys
+from app.logger import setup_logger, format_message
+from app.dictionary import *
 
 setup_logger('logfix')
 logfix = logging.getLogger('logfix')
-
-last_order_id = ''
-last_client_order_id = ''
-last_product_id = ''
-last_side = ''
-last_quantity = ''
 
 
 class FixSession:
@@ -47,11 +42,11 @@ class FixSession:
 
     def on_message(self, message):
         """Process Application messages here"""
-        if message.getHeader().getField(35) == '8' and '20=0' in str(message):
+        if message.getHeader().getField(field_msgtype) == msgtype_execution_report and '20=0' in str(message):
             self.get_exec_type(message)
-        elif message.getHeader().getField(35) == '3':
+        elif message.getHeader().getField(field_msgtype) == msgtype_reject:
             if "58=" in str(message):
-                reason = message.getField(58)
+                reason = message.getField(field_text)
                 logfix.info('Message Rejected, Reason: {} '.format(reason))
             else:
                 reason = 'Not Returned'
@@ -59,30 +54,26 @@ class FixSession:
 
     def get_exec_type(self, message):
         """Util Function to parse Execution Reports"""
-        exec_type = message.getField(150)
+        exec_type = message.getField(field_exectype)
         if "58=" in str(message):
-            reason = message.getField(58)
+            reason = message.getField(field_text)
         else:
             reason = 'Not Returned'
-        order_id = message.getField(37)
+        order_id = message.getField(field_orderid)
 
-        if exec_type == '0':
+        if exec_type == exectype_new:
             logfix.info('New Order - Order Not Filled')
-        elif exec_type == '1':
+        elif exec_type == exectype_partial:
             logfix.info('Order - Partial fill')
-        elif exec_type == '2':
+        elif exec_type == exectype_fill:
             logfix.info('Order - Filled')
-        elif exec_type == '3':
-            logfix.info('Order {} Done'.format(order_id))
-        elif exec_type == '4':
+        elif exec_type == exectype_cancelled:
             logfix.info('Order {} Cancelled, Reason: {}'.format(order_id, reason))
-        elif exec_type == '7':
+        elif exec_type == exectype_stopped:
             logfix.info('Order {} Stopped, Reason: {}'.format(order_id, reason))
-        elif exec_type == '8':
+        elif exec_type == exectype_rejected:
             logfix.info('Order {} Rejected, Reason: {}'.format(order_id, reason))
-        elif exec_type == 'D':
-            logfix.info('Order {} Restated, Reason: {}'.format(order_id, reason))
-        elif exec_type == 'I':
+        elif exec_type == exectype_status:
             logfix.info('Order Status for {} : {}'.format(order_id, message))
         else:
             return
@@ -127,12 +118,12 @@ class Application(fix.Application):
     def toAdmin(self, message, sessionID):
         """Function called for all outbound Administrative Messages"""
         if message.getHeader().getField(35) == 'A':
-            rawData = self.sign(message.getHeader().getField(52), message.getHeader().getField(35),
-                                message.getHeader().getField(34), self.API_KEY, message.getHeader().getField(56),
+            rawData = self.sign(message.getHeader().getField(field_sendingtime), message.getHeader().getField(field_msgtype),
+                                message.getHeader().getField(field_msgseqnum), self.API_KEY, message.getHeader().getField(field_targetcompid),
                                 self.PASSPHRASE)
-            message.setField(fix.StringField(554, self.PASSPHRASE))
-            message.setField(fix.StringField(96, rawData))
-            message.setField(fix.StringField(9407, self.API_KEY))
+            message.setField(fix.StringField(field_password, self.PASSPHRASE))
+            message.setField(fix.StringField(field_rawdata, rawData))
+            message.setField(fix.StringField(field_accesskey, self.API_KEY))
             logfix.info('(Admin) S >> %s' % format_message(message))
             return
         else:
@@ -140,7 +131,7 @@ class Application(fix.Application):
 
     def fromAdmin(self, message, sessionID):
         """Function called for all inbound Administrative Messages"""
-        if message.getHeader().getField(35) == 'A':
+        if message.getHeader().getField(field_msgtype) == 'A':
             logfix.info('(Admin) R << %s' % format_message(message))
         self.fixSession.on_message(message)
         return
@@ -148,7 +139,7 @@ class Application(fix.Application):
     def toApp(self, message, sessionID):
         """Function called for outbound Application Messages"""
         logfix.info('(App) S >> %s' % format_message(message))
-        self.last_client_order_id = message.getField(11)
+        self.last_client_order_id = message.getField(field_clorid)
         return
 
     def fromApp(self, message, sessionID):
@@ -156,11 +147,11 @@ class Application(fix.Application):
         logfix.info('(App) R << %s' % format_message(message))
 
         try:
-            if message.getField(11) == self.last_client_order_id:
-                self.last_order_id = message.getField(37)
-                self.last_quantity = message.getField(151)
-                self.last_side = message.getField(54)
-                self.last_product_id = message.getField(55)
+            if message.getField(field_clorid) == self.last_client_order_id:
+                self.last_order_id = message.getField(field_orderid)
+                self.last_quantity = message.getField(field_quantity)
+                self.last_side = message.getField(field_side)
+                self.last_product_id = message.getField(field_productid)
 
                 order_details = {
                     'last_client_order_id': self.last_client_order_id,
@@ -200,21 +191,21 @@ class Application(fix.Application):
         """Construct FIX Message based on User Input"""
         time.sleep(3)
         self.create_order(fixSession)
-        time.sleep(10)
+        time.sleep(6)
         self.logout(fixSession, sessionID)
 
     def build_get_order(self, fixSession, sessionID):
         """Construct FIX Message based on User Input"""
         time.sleep(3)
         self.get_order(fixSession)
-        time.sleep(10)
+        time.sleep(6)
         self.logout(fixSession, sessionID)
 
     def build_cancel_order(self, fixSession, sessionID):
         """Construct FIX Message based on User Input"""
         time.sleep(3)
         self.cancel_order(fixSession)
-        time.sleep(10)
+        time.sleep(6)
         self.logout(fixSession, sessionID)
 
     def logout(self, fixSession, sessionID):
@@ -223,7 +214,7 @@ class Application(fix.Application):
         header = logout_message.getHeader()
         header.setField(fix.MsgType(fix.MsgType_Logout))
         fixSession.send_message(logout_message)
-        time.sleep(2)
+        time.sleep(1)
         sys.exit()
 
     def run_create_order(self):
