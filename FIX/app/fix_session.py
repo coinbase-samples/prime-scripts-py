@@ -117,7 +117,7 @@ class Application(fix.Application):
 
     def toAdmin(self, message, sessionID):
         """Function called for all outbound Administrative Messages"""
-        if message.getHeader().getField(35) == 'A':
+        if message.getHeader().getField(field_msgtype) == 'msgtype_logon':
             rawData = self.sign(message.getHeader().getField(field_sendingtime), message.getHeader().getField(field_msgtype),
                                 message.getHeader().getField(field_msgseqnum), self.API_KEY, message.getHeader().getField(field_targetcompid),
                                 self.PASSPHRASE)
@@ -131,7 +131,7 @@ class Application(fix.Application):
 
     def fromAdmin(self, message, sessionID):
         """Function called for all inbound Administrative Messages"""
-        if message.getHeader().getField(field_msgtype) == 'A':
+        if message.getHeader().getField(field_msgtype) == 'msgtype_logon':
             logfix.info('(Admin) R << %s' % format_message(message))
         self.fixSession.on_message(message)
         return
@@ -180,6 +180,7 @@ class Application(fix.Application):
         return sign_b64
 
     def create_header(self, portfolio_id, message_type):
+        """Construct FIX header"""
         message = fix.Message()
         header = message.getHeader()
         header.setField(message_type)
@@ -217,15 +218,16 @@ class Application(fix.Application):
         time.sleep(1)
         sys.exit()
 
+
     def run_create_order(self):
-        """Run Application"""
+        """Run Create Order Application"""
         self.build_create_order(self.fixSession, self.sessionID)
 
     def run_get_order(self):
-        """Run Application"""
+        """Run Get Order Application"""
         self.build_get_order(self.fixSession, self.sessionID)
 
     def run_cancel_order(self):
-        """Run Application"""
+        """Run Cancel Order Application"""
         self.build_cancel_order(self.fixSession, self.sessionID)
 
