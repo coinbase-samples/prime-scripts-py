@@ -117,7 +117,7 @@ class Application(fix.Application):
 
     def toAdmin(self, message, sessionID):
         """Function called for all outbound Administrative Messages"""
-        if message.getHeader().getField(field_msgtype) == 'msgtype_logon':
+        if message.getHeader().getField(field_msgtype) == msgtype_logon:
             rawData = self.sign(message.getHeader().getField(field_sendingtime), message.getHeader().getField(field_msgtype),
                                 message.getHeader().getField(field_msgseqnum), self.API_KEY, message.getHeader().getField(field_targetcompid),
                                 self.PASSPHRASE)
@@ -131,7 +131,7 @@ class Application(fix.Application):
 
     def fromAdmin(self, message, sessionID):
         """Function called for all inbound Administrative Messages"""
-        if message.getHeader().getField(field_msgtype) == 'msgtype_logon':
+        if message.getHeader().getField(field_msgtype) == msgtype_logon:
             logfix.info('(Admin) R << %s' % format_message(message))
         self.fixSession.on_message(message)
         return
