@@ -26,8 +26,7 @@ def main():
         build = BuildGet()
 
         storefactory = quickfix.FileStoreFactory(settings)
-        logfactory = quickfix.FileLogFactory(settings)
-        initiator = quickfix.SSLSocketInitiator(build, storefactory, settings, logfactory)
+        initiator = quickfix.SSLSocketInitiator(build, storefactory, settings)
 
         initiator.start()
         build.run_get_order()

@@ -29,8 +29,7 @@ def main():
         build = BuildCreate()
 
         storefactory = quickfix.FileStoreFactory(settings)
-        logfactory = quickfix.FileLogFactory(settings)
-        initiator = quickfix.SSLSocketInitiator(build, storefactory, settings, logfactory)
+        initiator = quickfix.SSLSocketInitiator(build, storefactory, settings)
 
         initiator.start()
         build.run_create_order()
