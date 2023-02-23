@@ -1,12 +1,15 @@
-# Default ignored files
 /shelf/
 /workspace.xml
-# Editor-based HTTP Client requests
 /httpRequests/
-# Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
 .idea
 .envrc
 .direnv/
 REST/.env
+FIX/logs
+FIX/sessions
+__pycache__/
+*.pyc
+*.pyo
+FIX/example.cfg
