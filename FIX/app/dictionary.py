@@ -55,3 +55,4 @@ side_sell = '2'
 
 type_market = 'MARKET'
 type_limit = 'LIMIT'
+type_twap = 'TWAP'
