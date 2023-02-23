@@ -1,4 +1,4 @@
-# Copyright 2022 Coinbase Global, Inc.
+# Copyright 2023 Coinbase Global, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
 import os
 import quickfix as fix
 from app.fix_session import Application
+from app.dictionary import *
 
 
 class BuildCancel(Application):
@@ -29,7 +30,7 @@ class BuildCancel(Application):
         message.setField(fix.OrderID(str(order_id)))
         message.setField(fix.OrigClOrdID(str(client_order_id)))
         message.setField(fix.Symbol(str(product)))
-        if side == '1':
+        if side == side_buy:
             message.setField(fix.Side(fix.Side_BUY))
         else:
             message.setField(fix.Side(fix.Side_SELL))

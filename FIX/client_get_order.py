@@ -1,4 +1,4 @@
-# Copyright 2022 Coinbase Global, Inc.
+# Copyright 2023 Coinbase Global, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,9 +31,8 @@ def main():
         initiator.start()
         build.run_get_order()
 
-    except (quickfix.ConfigError, quickfix.RuntimeError):
-
-        sys.exit()
+    except (quickfix.ConfigError, quickfix.RuntimeError) as exception:
+        assert type(exception).__name__ == 'NameError'
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-# Copyright 2022 Coinbase Global, Inc.
+# Copyright 2023 Coinbase Global, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -49,3 +49,9 @@ field_productid = 55
 field_password = 554
 field_rawdata = 96
 field_accesskey = 9407
+
+side_buy = '1'
+side_sell = '2'
+
+type_market = 'MARKET'
+type_limit = 'LIMIT'
