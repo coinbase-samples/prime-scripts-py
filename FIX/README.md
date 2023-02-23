@@ -1,13 +1,10 @@
 # FIX README.md
 
 This is a Python FIX API test suite for Coinbase's Prime FIX APIs. 
-## Workshop Tutorial
 
 # Getting started
 
 ## 1. Getting into the FIX directory
-
-This first step will differ depending on if your workshop covers a combination of REST and FIX or exclusively FIX.
 
 If you are currently in the REST directory, you can use the following command: 
 ```
@@ -21,36 +18,27 @@ cd prime-scripts-py/FIX
 
 ## 2. Configuration
 
-1. You will need to install two dependencies for this to operate: quickfix and certifi. This allows for FIX to run within Python. This can be done with the following command:
+You will need to install two dependencies for this to operate: quickfix and certifi. This allows for Python to successfully connect to Coinbase via FIX. This can be done with the following command:
 
 ```
 pip install -r requirements.txt
 ```
 
-2. When connecting to Coinbase Prime via FIX, you will need to provide your API credentials and portfolio ID. This can be accomplished by running the following command:
+We also want to store and grab variables to ensure that you can connect to Prime via FIX. Run the following to declare these variables:
 
-```
-sed -i "s,YOUR_API_PASSPHRASE,$PASSPHRASE," fix/resources/prime.properties
-sed -i "s,YOUR_API_KEY,$ACCESS_KEY," fix/resources/prime.properties
-sed -i "s,YOUR_API_SECRET,$SIGNING_KEY," fix/resources/prime.properties
-sed -i "s,YOUR_PORTFOLIO_ID,$PORTFOLIO_ID," fix/resources/prime.properties
-sed -i "s,YOUR_SVC_ACCOUNT_ID,$SVC_ACCOUNTID," fix/resources/prime.properties
-```
+```bash
 
-## 3. Running Your FIX Application
-
-1. To begin the FIX workshop, run the following command: 
-```
-python client.py
+export ACCESS_KEY=ACCESSKEYHERE
+export PASSPHRASE=PASSPHRASEHERE
+export SIGNING_KEY=SIGNING_KEYHERE
+export PORTFOLIO_ID=PORTFOLIO_IDHERE
+export SVC_ACCOUNTID=SVC_ACCOUNTIDHERE
+export FIX_VERSION=FIX.4.2
+export TARGET_COMP_ID=COIN
 ```
 
-2. In your Run Console you should see a menu prompting you to enter 1-4 to explore.
+Connect to FIX with any of the `client_*` scripts, e.g.:
 
 ```
-Please choose one of the following: 
-1: Place New Order
-2: Get Order Status
-3: Cancel Order
-4: Exit Application!
+python client_create_order.py
 ```
-
