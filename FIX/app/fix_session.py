@@ -112,7 +112,6 @@ class Application(fix.Application):
 
     def onLogout(self, sessionID):
         """Function called upon Logout"""
-        #logfix.info('Session (%s) logout!' % sessionID.toString())
         return
 
     def toAdmin(self, message, sessionID):
@@ -218,7 +217,6 @@ class Application(fix.Application):
         time.sleep(1)
         sys.exit()
 
-
     def run_create_order(self):
         """Run Create Order Application"""
         self.build_create_order(self.fixSession, self.sessionID)
@@ -230,4 +228,3 @@ class Application(fix.Application):
     def run_cancel_order(self):
         """Run Cancel Order Application"""
         self.build_cancel_order(self.fixSession, self.sessionID)
-
