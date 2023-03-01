@@ -1,4 +1,4 @@
-# Copyright 2022 Coinbase Global, Inc.
+# Copyright 2023-present Coinbase Global, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@ import logging
 
 loggers = {}
 
-def setup_logger(logger_name, log_file, level=logging.INFO):
+
+def setup_logger(logger_name, level=logging.INFO):
     global loggers
 
     if loggers.get(logger_name):
@@ -24,7 +25,9 @@ def setup_logger(logger_name, log_file, level=logging.INFO):
     else:
         lz = logging.getLogger(logger_name)
         lz.setLevel(level)
-        formatter = logging.Formatter('%(asctime)s.%(msecs)03d : %(message)s', datefmt='%Y-%m-%d,%H:%M:%S')
+        formatter = logging.Formatter(
+            '%(asctime)s.%(msecs)03d : %(message)s',
+            datefmt='%Y-%m-%d,%H:%M:%S')
         streamHandler = logging.StreamHandler()
         streamHandler.setFormatter(formatter)
         lz.addHandler(streamHandler)
@@ -36,5 +39,3 @@ def setup_logger(logger_name, log_file, level=logging.INFO):
 def format_message(message):
     msg = message.toString().replace('\u0001', '|')
     return msg
-
-

@@ -1,4 +1,4 @@
-# Copyright 2022 Coinbase Global, Inc.
+# Copyright 2023-present Coinbase Global, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,34 +11,31 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import sys, os
-import argparse
 import quickfix
-from application import Application
-from config import Configuration
-import certifi
+from app.configuration import Configuration
 import configparser
+from build_create_order import BuildCreate
 
 config = configparser.ConfigParser()
-config.read('fix/resources/prime.properties')
+
 
 def main():
     """Main"""
     try:
         Configuration().build_config()
         settings = quickfix.SessionSettings('example.cfg', True)
-        application = Application()
+
+        build = BuildCreate()
+
         storefactory = quickfix.FileStoreFactory(settings)
-        logfactory = quickfix.FileLogFactory(settings)
-        initiator = quickfix.SSLSocketInitiator(application, storefactory, settings, logfactory)
+        initiator = quickfix.SSLSocketInitiator(build, storefactory, settings)
 
         initiator.start()
-        application.run()
+        build.run_create_order()
 
-    except (quickfix.ConfigError, quickfix.RuntimeError) as e:
-        sys.exit()
+    except (quickfix.ConfigError, quickfix.RuntimeError) as exception:
+        assert type(exception).__name__ == 'NameError'
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     main()
-
-
