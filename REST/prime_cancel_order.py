@@ -22,7 +22,7 @@ PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
 order_id = 'ORDER_ID_HERE'
 
-uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/order/{order_id}/cancel'
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/orders/{order_id}/cancel'
 
 timestamp = str(int(time.time()))
 client_order_id = uuid.uuid4()
