@@ -20,8 +20,7 @@ PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
 allocation_id = 'allocation_id'
-
-uri =f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/allocations/{allocation_id}'
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/allocations/{allocation_id}'
 timestamp = str(int(time.time()))
 method = 'GET'
 

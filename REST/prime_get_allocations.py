@@ -11,15 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from urllib.parse import urlparse
 import json, hmac, hashlib, time, os, base64, requests
+from urllib.parse import urlparse
+from dateutil.relativedelta import relativedelta
+from datetime import datetime
 
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
-start_date = '2023-01-01T12:00:00Z'
+# collect allocations from past three months
+time_offset = datetime.now() - relativedelta(months=3)
+start_date = time_offset.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/allocations?start_date={start_date}'
 timestamp = str(int(time.time()))
