@@ -11,15 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import sys, json, hmac, hashlib, time, os, base64, requests
 from urllib.parse import urlparse
-import json, hmac, hashlib, time, os, base64, requests
 
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
-allocation_id = 'allocation_id'
+try:
+    allocation_id = sys.argv[1]
+except IndexError:
+    print("Please provide allocation_id as a command line argument")
+    sys.exit(1)
+
 uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/allocations/{allocation_id}'
 timestamp = str(int(time.time()))
 method = 'GET'

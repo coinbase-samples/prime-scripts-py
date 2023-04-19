@@ -11,8 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import json, hmac, hashlib, time, uuid, os, base64, requests, argparse
 from urllib.parse import urlparse
-import sys, json, hmac, hashlib, time, uuid, os, base64, requests
 
 # Must be entity or organization API key
 API_KEY = os.environ.get('ACCESS_KEY')
@@ -24,25 +24,39 @@ uri = f'https://api.prime.coinbase.com/v1/allocations'
 timestamp = str(int(time.time()))
 method = 'POST'
 allocation_id = uuid.uuid4()
+allocation_leg_id = uuid.uuid4()
 
 product_id = 'ETH-USD'
-destination_portfolio_id = 'destination_portfolio_id'
-amount = '100'
 size_type = 'PERCENT'
 
-order_ids = sys.argv[1:]  # Accept command line arguments as order_ids
+parser = argparse.ArgumentParser(description='Allocate funds to multiple portfolios')
+parser.add_argument('--destination_portfolio_ids', '-d', nargs='+', required=True,
+                    help='The UUIDs of the destination portfolios to which funds will be allocated')
+parser.add_argument('--order_ids', '-o', nargs='+', required=True,
+                    help='The UUIDs of the orders to be allocated to the destination portfolios')
 
-allocation_legs = [{
-            'allocation_leg_id': ORIGIN_PORTFOLIO_ID,
-            'destination_portfolio_id': destination_portfolio_id,
-            'amount': amount
-        }]
+args = parser.parse_args()
+
+if not args.destination_portfolio_ids or not args.order_ids:
+    print("Error: at least one value for both --destination_portfolio_ids and --order_ids is required")
+    exit(1)
+
+# Calculate amount per destination_portfolio_id. Defaults to equal distribution
+amount = 100 / len(args.destination_portfolio_ids)
+
+allocation_legs = []
+for dest_portfolio_id in args.destination_portfolio_ids:
+    allocation_legs.append({
+            'allocation_leg_id': allocation_leg_id,
+            'destination_portfolio_id': dest_portfolio_id,
+            'amount': str(amount)
+        })
 
 payload = {
     'allocation_id': str(allocation_id),
     'source_portfolio_id': ORIGIN_PORTFOLIO_ID,
     'product_id': product_id,
-    'order_ids': order_ids,
+    'order_ids': args.order_ids,
     'allocation_legs': allocation_legs,
     'size_type': size_type
 }
