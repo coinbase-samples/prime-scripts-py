@@ -11,6 +11,3 @@ Simply clone the repo to run scripts from your command line. Then, review the re
 ```bash
 git clone https://github.com/coinbase-samples/prime-scripts-py
 ```
-
-## Contributing
-Pull requests are welcome. For major changes, please open an issue to discuss what you would like to change.
