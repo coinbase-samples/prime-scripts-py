@@ -22,13 +22,13 @@ SVC_ACCOUNTID = os.environ.get('SVC_ACCOUNTID')
 uri = 'wss://ws-feed.prime.coinbase.com'
 timestamp = str(int(time.time()))
 channel = 'l2_data'
-product_id = ['ETC-USD']
+product_ids = ['ETC-USD']
 
 async def main_loop():
     while True:
         try:
             async with websockets.connect(uri, ping_interval=None, max_size=None) as websocket:
-                signature = sign(channel, ACCESS_KEY, SECRET_KEY, SVC_ACCOUNTID, product_id)
+                signature = sign(channel, ACCESS_KEY, SECRET_KEY, SVC_ACCOUNTID, product_ids)
                 auth_message = json.dumps({
                     'type': 'subscribe',
                     'channel': channel,
@@ -37,7 +37,7 @@ async def main_loop():
                     'timestamp': timestamp,
                     'passphrase': PASSPHRASE,
                     'signature': signature,
-                    'product_ids': product_id
+                    'product_ids': product_ids
                 })
                 await websocket.send(auth_message)
                 while True:
