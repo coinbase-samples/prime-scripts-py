@@ -19,7 +19,7 @@ API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 
-uri =f'https://api.prime.coinbase.com/v1/portfolios'
+uri = 'https://api.prime.coinbase.com/v1/portfolios'
 timestamp = str(int(time.time()))
 method = 'GET'
 
