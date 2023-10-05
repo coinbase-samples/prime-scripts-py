@@ -13,47 +13,36 @@
 # limitations under the License.
 
 from urllib.parse import urlparse
-import json, hmac, hashlib, time, uuid, os, base64, requests
+import json, hmac, hashlib, time, os, base64, requests, sys
 
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
-uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/order'
+try:
+    order_id = sys.argv[1]
+except IndexError:
+    print("Please provide order_id as a command line argument.")
+    sys.exit(1)
 
+
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/orders/{order_id}/fills'
 timestamp = str(int(time.time()))
-client_order_id = uuid.uuid4()
-method = 'POST'
-
-product_id = 'ETH-USD'
-side = 'BUY'
-order_type = 'MARKET'
-base_quantity = '0.001'
-
-payload = {
-    'portfolio_id': PORTFOLIO_ID,
-    'product_id': product_id,
-    'client_order_id': str(client_order_id),
-    'side': side,
-    'type': order_type,
-    'base_quantity': base_quantity
-}
+method = 'GET'
 
 url_path = urlparse(uri).path
-message = timestamp + method + url_path + json.dumps(payload)
+message = timestamp + method + url_path
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {
-    'X-CB-ACCESS-SIGNATURE': signature_b64,
-    'X-CB-ACCESS-timestamp': timestamp,
-    'X-CB-ACCESS-KEY': API_KEY,
-    'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
-    'Accept': 'application/json'
+   'X-CB-ACCESS-SIGNATURE': signature_b64,
+   'X-CB-ACCESS-timestamp': timestamp,
+   'X-CB-ACCESS-KEY': API_KEY,
+   'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
+   'Accept': 'application/json'
 }
 
-response = requests.post(uri, json=payload, headers=headers)
+response = requests.get(uri, headers=headers)
 parsed_response = json.loads(response.text)
-
-order_id = parsed_response['order_id']
-print(order_id)
+print(json.dumps(parsed_response, indent=3))
