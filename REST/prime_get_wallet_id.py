@@ -23,7 +23,6 @@ WALLET_NAME = os.environ.get('WALLET_NAME')
 
 uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets?type=VAULT&symbols=ETH'
 timestamp = str(int(time.time()))
-idempotency_key = uuid.uuid4()
 method = 'GET'
 
 url_path = urlparse(uri).path
@@ -37,7 +36,7 @@ headers = {
    'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
    'Accept': 'application/json'
 }
-response = requests.get(uri, headers=headers)
+response = requests.request(method, uri, headers=headers)
 parsed_response = json.loads(response.text)
 wallets = parsed_response['wallets']
 

@@ -24,12 +24,11 @@ try:
     wallet_id = sys.argv[1]
     deposit_type = sys.argv[2].upper()
 except IndexError:
-    print("Please provide wallet_id and deposit_type (e.g. CRYPTO) as command line arguments")
-    sys.exit(1)
+    sys.exit("Please provide wallet_id and deposit_type (e.g. CRYPTO) as command line arguments")
 
-uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{wallet_id}/deposit_instructions?deposit_type={deposit_type}'
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{wallet_id}' \
+      f'/deposit_instructions?deposit_type={deposit_type}'
 timestamp = str(int(time.time()))
-idempotency_key = uuid.uuid4()
 method = 'GET'
 
 url_path = urlparse(uri).path
@@ -43,6 +42,6 @@ headers = {
    'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
    'Accept': 'application/json'
 }
-response = requests.get(uri, headers=headers)
+response = requests.request(method, uri, headers=headers)
 parsed_response = json.loads(response.text)
 print(json.dumps(parsed_response, indent=3))

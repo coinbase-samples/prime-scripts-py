@@ -22,7 +22,6 @@ PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
 uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/address_book'
 timestamp = str(int(time.time()))
-idempotency_key = uuid.uuid4()
 method = 'GET'
 
 url_path = urlparse(uri).path
@@ -36,6 +35,6 @@ headers = {
    'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
    'Accept': 'application/json'
 }
-response = requests.get(uri, headers=headers)
+response = requests.request(method, uri, headers=headers)
 parsed_response = json.loads(response.text)
 print(json.dumps(parsed_response, indent=3))

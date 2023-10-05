@@ -37,6 +37,6 @@ headers = {
    'Accept': 'application/json'
 }
 
-response = requests.get(uri, headers=headers)
+response = requests.request(method, uri, headers=headers)
 parsed_response = json.loads(response.text)
 print(json.dumps(parsed_response, indent=3))

@@ -20,7 +20,7 @@ SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
-uri =f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}'
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}'
 timestamp = str(int(time.time()))
 method = 'GET'
 
@@ -36,6 +36,6 @@ headers = {
   'Accept': 'application/json'
 }
 
-response = requests.get(uri, headers=headers)
+response = requests.request(method, uri, headers=headers)
 parsed_response = json.loads(response.text)
 print(json.dumps(parsed_response, indent=3))

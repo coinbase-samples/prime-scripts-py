@@ -22,8 +22,7 @@ PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 try:
     netting_id = sys.argv[1]
 except IndexError:
-    print("Please provide netting_id as a command line argument.")
-    sys.exit(1)
+    sys.exit("Please provide netting_id as a command line argument.")
 
 uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/allocations/net/{netting_id}'
 timestamp = str(int(time.time()))
@@ -41,6 +40,6 @@ headers = {
   'Accept': 'application/json'
 }
 
-response = requests.get(uri, headers=headers)
+response = requests.request(method, uri, headers=headers)
 parsed_response = json.loads(response.text)
 print(json.dumps(parsed_response, indent=3))
