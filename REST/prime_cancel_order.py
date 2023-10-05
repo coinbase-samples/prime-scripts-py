@@ -13,28 +13,29 @@
 # limitations under the License.
 
 from urllib.parse import urlparse
-import json, hmac, hashlib, time, uuid, os, base64, requests
+import json, hmac, hashlib, time, uuid, os, base64, requests, sys
 
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
-order_id = 'ORDER_ID_HERE'
+try:
+    order_id = sys.argv[1]
+except IndexError:
+    sys.exit('Please provide order_id as a command line argument.')
 
 uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/orders/{order_id}/cancel'
-
+url_path = urlparse(uri).path
 timestamp = str(int(time.time()))
 client_order_id = uuid.uuid4()
-method = 'POST'
 
 payload = {
     'portfolio_id': PORTFOLIO_ID,
     'order_id': order_id
 }
 
-url_path = urlparse(uri).path
-message = timestamp + method + url_path + json.dumps(payload)
+message = timestamp + 'POST' + url_path + json.dumps(payload)
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {
@@ -45,6 +46,6 @@ headers = {
     'Accept': 'application/json'
 }
 
-response = requests.request(method, uri, json=payload, headers=headers)
+response = requests.post(uri, json=payload, headers=headers)
 parsed_response = json.loads(response.text)
 print(json.dumps(parsed_response, indent=3))

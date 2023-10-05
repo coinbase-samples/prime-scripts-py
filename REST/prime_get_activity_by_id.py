@@ -22,14 +22,12 @@ PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 try:
     activity_id = sys.argv[1]
 except IndexError:
-    sys.exit("Please provide activity_id as a command line argument.")
+    sys.exit('Please provide activity_id as a command line argument.')
 
 uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/activities/{activity_id}'
-timestamp = str(int(time.time()))
-method = 'GET'
-
 url_path = urlparse(uri).path
-message = timestamp + method + url_path
+timestamp = str(int(time.time()))
+message = timestamp + 'GET' + url_path
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {
@@ -40,6 +38,6 @@ headers = {
   'Accept': 'application/json'
 }
 
-response = requests.request(method, uri, headers=headers)
+response = requests.get(uri, headers=headers)
 parsed_response = json.loads(response.text)
 print(json.dumps(parsed_response, indent=3))
