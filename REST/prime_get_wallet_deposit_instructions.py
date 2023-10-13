@@ -12,21 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json, hmac, hashlib, time, uuid, os, base64, requests, sys
 from urllib.parse import urlparse
-import json, hmac, hashlib, time, os, base64, requests
 
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
-product_id = 'ETH-USD'
-uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/orders?product_ids={product_id}&sort_direction=DESC'
-timestamp = str(int(time.time()))
-method = 'GET'
+try:
+    wallet_id = sys.argv[1]
+    deposit_type = sys.argv[2].upper()
+except IndexError:
+    sys.exit("Please provide wallet_id and deposit_type (e.g. CRYPTO) as command line arguments")
 
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{wallet_id}' \
+      f'/deposit_instructions?deposit_type={deposit_type}'
 url_path = urlparse(uri).path
-message = timestamp + method + url_path
+timestamp = str(int(time.time()))
+message = timestamp + 'GET' + url_path
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {
@@ -36,7 +40,6 @@ headers = {
    'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
    'Accept': 'application/json'
 }
-
 response = requests.get(uri, headers=headers)
 parsed_response = json.loads(response.text)
 print(json.dumps(parsed_response, indent=3))

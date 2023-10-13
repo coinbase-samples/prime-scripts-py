@@ -19,9 +19,10 @@ API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
-ORDER_ID = os.environ.get('NEW_ORDER_ID')
 
-uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/orders/{ORDER_ID}'
+product_id = 'ETH-USD'
+
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/orders?product_ids={product_id}&sort_direction=DESC'
 url_path = urlparse(uri).path
 timestamp = str(int(time.time()))
 message = timestamp + 'GET' + url_path

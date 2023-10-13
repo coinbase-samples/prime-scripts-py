@@ -25,15 +25,13 @@ wallet_id = 'WALLET_UUID'
 uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{wallet_id}/conversion'
 
 timestamp = str(int(time.time()))
-method = 'POST'
 
-# this endpoint only supports conversions between USDC and USD
+# only supports conversions between USDC and USD
 amount = '1'
 destination = 'DESTINATION_WALLET_UUID'
 idempotency_key = uuid.uuid4()
 source_symbol = 'USD'
 destination_symbol = 'USDC'
-
 
 payload = {
     'portfolio_id': PORTFOLIO_ID,
@@ -46,7 +44,7 @@ payload = {
 }
 
 url_path = urlparse(uri).path
-message = timestamp + method + url_path + json.dumps(payload)
+message = timestamp + 'POST' + url_path + json.dumps(payload)
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {

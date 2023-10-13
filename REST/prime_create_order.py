@@ -24,12 +24,11 @@ uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/order'
 
 timestamp = str(int(time.time()))
 client_order_id = uuid.uuid4()
-method = 'POST'
 
 product_id = 'ETH-USD'
 side = 'BUY'
 order_type = 'MARKET'
-base_quantity = '0.01'
+base_quantity = '0.001'
 
 payload = {
     'portfolio_id': PORTFOLIO_ID,
@@ -41,7 +40,7 @@ payload = {
 }
 
 url_path = urlparse(uri).path
-message = timestamp + method + url_path + json.dumps(payload)
+message = timestamp + 'POST' + url_path + json.dumps(payload)
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {
