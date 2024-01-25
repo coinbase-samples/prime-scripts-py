@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import json, hmac, hashlib, time, uuid, os, base64, requests, argparse
+import json, hmac, hashlib, time, uuid, os, base64, requests, argparse, sys
 from urllib.parse import urlparse
 
 # Must be entity or organization API key
@@ -22,7 +22,6 @@ ORIGIN_PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
 uri = 'https://api.prime.coinbase.com/v1/allocations'
 timestamp = str(int(time.time()))
-method = 'POST'
 allocation_id = uuid.uuid4()
 allocation_leg_id = uuid.uuid4()
 
@@ -38,8 +37,7 @@ parser.add_argument('--order_ids', '-o', nargs='+', required=True,
 args = parser.parse_args()
 
 if not args.destination_portfolio_ids or not args.order_ids:
-    print("Error: at least one value for both --destination_portfolio_ids and --order_ids is required")
-    exit(1)
+    sys.exit('Error: at least one value for both --destination_portfolio_ids and --order_ids is required')
 
 # Calculate amount per destination_portfolio_id. Defaults to equal distribution
 amount = 100 / len(args.destination_portfolio_ids)
@@ -62,7 +60,7 @@ payload = {
 }
 
 url_path = urlparse(uri).path
-message = timestamp + method + url_path + json.dumps(payload)
+message = timestamp + 'POST' + url_path + json.dumps(payload)
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {

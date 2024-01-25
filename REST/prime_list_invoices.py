@@ -1,4 +1,4 @@
-# Copyright 2022-present Coinbase Global, Inc.
+# Copyright 2023-present Coinbase Global, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,21 +18,20 @@ import json, hmac, hashlib, time, os, base64, requests
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
-PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
-ORDER_ID = os.environ.get('NEW_ORDER_ID')
+ENTITY_ID = os.environ.get('ENTITY_ID')
 
-uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/orders/{ORDER_ID}'
+uri = f'https://api.prime.coinbase.com/v1/entities/{ENTITY_ID}/invoices'
 url_path = urlparse(uri).path
 timestamp = str(int(time.time()))
 message = timestamp + 'GET' + url_path
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {
-   'X-CB-ACCESS-SIGNATURE': signature_b64,
-   'X-CB-ACCESS-timestamp': timestamp,
-   'X-CB-ACCESS-KEY': API_KEY,
-   'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
-   'Accept': 'application/json'
+    'X-CB-ACCESS-SIGNATURE': signature_b64,
+    'X-CB-ACCESS-timestamp': timestamp,
+    'X-CB-ACCESS-KEY': API_KEY,
+    'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
+    'Accept': 'application/json'
 }
 
 response = requests.get(uri, headers=headers)

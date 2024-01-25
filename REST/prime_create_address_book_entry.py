@@ -13,28 +13,39 @@
 # limitations under the License.
 
 from urllib.parse import urlparse
-import json, hmac, hashlib, time, os, base64, requests
+import json, hmac, hashlib, time, uuid, os, base64, requests
 
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
-ORDER_ID = os.environ.get('NEW_ORDER_ID')
+ADDRESS = os.environ.get('BLOCKCHAIN_ADDRESS')
+NAME = os.environ.get('ADDRESS_NAME')
 
-uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/orders/{ORDER_ID}'
-url_path = urlparse(uri).path
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/address_book'
 timestamp = str(int(time.time()))
-message = timestamp + 'GET' + url_path
+client_order_id = uuid.uuid4()
+symbol = 'ETH'
+
+payload = {
+    'portfolio_id': PORTFOLIO_ID,
+    'address': ADDRESS,
+    'currency_symbol': symbol,
+    'name': NAME
+}
+
+url_path = urlparse(uri).path
+message = timestamp + 'POST' + url_path + json.dumps(payload)
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {
-   'X-CB-ACCESS-SIGNATURE': signature_b64,
-   'X-CB-ACCESS-timestamp': timestamp,
-   'X-CB-ACCESS-KEY': API_KEY,
-   'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
-   'Accept': 'application/json'
+    'X-CB-ACCESS-SIGNATURE': signature_b64,
+    'X-CB-ACCESS-timestamp': timestamp,
+    'X-CB-ACCESS-KEY': API_KEY,
+    'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
+    'Accept': 'application/json'
 }
 
-response = requests.get(uri, headers=headers)
+response = requests.post(uri, json=payload, headers=headers)
 parsed_response = json.loads(response.text)
-print(json.dumps(parsed_response, indent=3))
+print(json.dumps(parsed_response,indent=3))

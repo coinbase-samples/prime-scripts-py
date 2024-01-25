@@ -22,13 +22,13 @@ PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 ORIGIN_WALLET_ID = os.environ.get('WALLET_ID')
 DESTINATION_WALLET_ADDRESS = os.environ.get('BLOCKCHAIN_ADDRESS')
 
+amount = '0.001'
+currency_symbol = 'eth'
+destination_type = 'DESTINATION_BLOCKCHAIN'
+
 uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{ORIGIN_WALLET_ID}/withdrawals'
 timestamp = str(int(time.time()))
 idempotency_key = str(uuid.uuid4())
-method = 'POST'
-destination_type = 'DESTINATION_BLOCKCHAIN'
-amount = '0.01'
-currency_symbol = 'eth'
 
 payload = {
     'portfolio_id': PORTFOLIO_ID,
@@ -43,7 +43,7 @@ payload = {
 }
 
 url_path = urlparse(uri).path
-message = timestamp + method + url_path + json.dumps(payload)
+message = timestamp + 'POST' + url_path + json.dumps(payload)
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {

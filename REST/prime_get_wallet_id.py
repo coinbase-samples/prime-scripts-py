@@ -22,12 +22,9 @@ PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 WALLET_NAME = os.environ.get('WALLET_NAME')
 
 uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets?type=VAULT&symbols=ETH'
-timestamp = str(int(time.time()))
-idempotency_key = uuid.uuid4()
-method = 'GET'
-
 url_path = urlparse(uri).path
-message = timestamp + method + url_path
+timestamp = str(int(time.time()))
+message = timestamp + 'GET' + url_path
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {

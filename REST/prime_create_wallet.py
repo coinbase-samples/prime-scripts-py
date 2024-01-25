@@ -21,12 +21,12 @@ PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 WALLET_NAME = os.environ.get('WALLET_NAME')
 
+symbol = 'eth'
+wallet_type = 'VAULT'
+
 uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets'
 timestamp = str(int(time.time()))
 idempotency_key = uuid.uuid4()
-method = 'POST'
-symbol = 'eth'
-wallet_type = 'VAULT'
 
 payload = {
     'portfolio_id': PORTFOLIO_ID,
@@ -36,7 +36,7 @@ payload = {
     }
 
 url_path = urlparse(uri).path
-message = timestamp + method + url_path + json.dumps(payload)
+message = timestamp + 'POST' + url_path + json.dumps(payload)
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {

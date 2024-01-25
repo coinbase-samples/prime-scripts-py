@@ -22,15 +22,12 @@ PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 try:
     allocation_id = sys.argv[1]
 except IndexError:
-    print("Please provide allocation_id as a command line argument.")
-    sys.exit(1)
+    sys.exit("Please provide allocation_id as a command line argument.")
 
 uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/allocations/{allocation_id}'
-timestamp = str(int(time.time()))
-method = 'GET'
-
 url_path = urlparse(uri).path
-message = timestamp + method + url_path
+timestamp = str(int(time.time()))
+message = timestamp + 'GET' + url_path
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {

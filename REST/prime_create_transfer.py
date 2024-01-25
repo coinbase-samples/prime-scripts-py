@@ -22,12 +22,12 @@ PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 ORIGIN_WALLET_ID = os.environ.get('ORIGIN_WALLET_ID')
 DESTINATION_WALLET_ID = os.environ.get('WALLET_ID')
 
+currency_symbol = 'ETH'
+amount = '0.001'
+
 uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{ORIGIN_WALLET_ID}/transfers'
 timestamp = str(int(time.time()))
 idempotency_key = str(uuid.uuid4())
-method = 'POST'
-currency_symbol = 'ETH'
-amount = '0.01'
 
 payload = {
     'portfolio_id': PORTFOLIO_ID,
@@ -39,7 +39,7 @@ payload = {
 }
 
 url_path = urlparse(uri).path
-message = timestamp + method + url_path + json.dumps(payload)
+message = timestamp + 'POST' + url_path + json.dumps(payload)
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {

@@ -13,15 +13,20 @@
 # limitations under the License.
 
 from urllib.parse import urlparse
-import json, hmac, hashlib, time, os, base64, requests
+import json, hmac, hashlib, time, os, base64, requests, sys
 
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
-ORDER_ID = os.environ.get('NEW_ORDER_ID')
 
-uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/orders/{ORDER_ID}'
+try:
+    order_id = sys.argv[1]
+except IndexError:
+    sys.exit("Please provide order_id as a command line argument.")
+
+
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/orders/{order_id}/fills'
 url_path = urlparse(uri).path
 timestamp = str(int(time.time()))
 message = timestamp + 'GET' + url_path
