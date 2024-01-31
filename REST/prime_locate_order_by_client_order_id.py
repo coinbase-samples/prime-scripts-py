@@ -2,7 +2,7 @@ from urllib.parse import urlparse
 import json, hmac, hashlib, time, os, base64, requests, sys
 
 if len(sys.argv) < 2:
-    print("Usage: python prime_locate_order_by_client_order_id.py <client_order_id>")
+    print('Usage: python prime_locate_order_by_client_order_id.py <client_order_id>')
     sys.exit(1)
 
 client_order_id_to_check = sys.argv[1]
@@ -31,12 +31,12 @@ parsed_response = json.loads(response.text)
 
 # Search for the order with the specified client_order_id
 order_found = False
-for order in parsed_response.get("orders", []):
-    if order.get("client_order_id") == client_order_id_to_check:
-        order_id = order.get("id")
-        print(f"Order found:\n  Client Order ID: {client_order_id_to_check}\n  Associated Order ID: {order_id}")
+for order in parsed_response.get('orders', []):
+    if order.get('client_order_id') == client_order_id_to_check:
+        order_id = order.get('id')
+        print(f'Order found:\n  Client Order ID: {client_order_id_to_check}\n  Associated Order ID: {order_id}')
         order_found = True
         break
 
 if not order_found:
-    print(f"Order with client_order_id {client_order_id_to_check} not found.")
+    print(f'Order with client_order_id {client_order_id_to_check} not found.')
