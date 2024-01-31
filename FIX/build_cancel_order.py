@@ -30,7 +30,7 @@ class BuildCancel(Application):
         message.setField(fix.OrderID(str(order_id)))
         message.setField(fix.OrigClOrdID(str(client_order_id)))
         message.setField(fix.Symbol(str(product)))
-        if side == side_buy:
+        if side == fix_side_buy:
             message.setField(fix.Side(fix.Side_BUY))
         else:
             message.setField(fix.Side(fix.Side_SELL))
