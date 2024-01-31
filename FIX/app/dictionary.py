@@ -50,8 +50,11 @@ field_password = 554
 field_rawdata = 96
 field_accesskey = 9407
 
-side_buy = '1'
-side_sell = '2'
+side_buy = 'BUY'
+side_sell = 'SELL'
+
+fix_side_buy = '1'
+fix_side_sell = '2'
 
 type_market = 'MARKET'
 type_limit = 'LIMIT'
