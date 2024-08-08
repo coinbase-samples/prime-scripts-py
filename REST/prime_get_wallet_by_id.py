@@ -19,9 +19,9 @@ API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
-WALLET_NAME = os.environ.get('WALLET_NAME')
+WALLET_ID = os.environ.get('WALLET_ID')
 
-uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets?type=VAULT&symbols=ETH'
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{WALLET_ID}'
 url_path = urlparse(uri).path
 timestamp = str(int(time.time()))
 message = timestamp + 'GET' + url_path
@@ -34,11 +34,7 @@ headers = {
    'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
    'Accept': 'application/json'
 }
+
 response = requests.get(uri, headers=headers)
 parsed_response = json.loads(response.text)
-wallets = parsed_response['wallets']
-
-for wallet in wallets:
-    if wallet['name'] == WALLET_NAME:
-        destination_wallet_id = wallet['id']
-        print(destination_wallet_id)
+print(json.dumps(parsed_response, indent=3))

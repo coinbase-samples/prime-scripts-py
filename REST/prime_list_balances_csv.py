@@ -1,4 +1,4 @@
-# Copyright 2022-present Coinbase Global, Inc.
+# Copyright 2024-present Coinbase Global, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import csv
 from urllib.parse import urlparse
 import json, hmac, hashlib, time, os, base64, requests
 
@@ -20,20 +20,35 @@ SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
-uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}'
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/balances'
 url_path = urlparse(uri).path
 timestamp = str(int(time.time()))
 message = timestamp + 'GET' + url_path
 signature_b64 = base64.b64encode(hmac.digest(SECRET_KEY.encode(), message.encode(), hashlib.sha256))
 
 headers = {
-  'X-CB-ACCESS-SIGNATURE': signature_b64,
-  'X-CB-ACCESS-TIMESTAMP': timestamp,
-  'X-CB-ACCESS-KEY': API_KEY,
-  'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
-  'Accept': 'application/json'
+    'X-CB-ACCESS-SIGNATURE': signature_b64,
+    'X-CB-ACCESS-timestamp': timestamp,
+    'X-CB-ACCESS-KEY': API_KEY,
+    'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
+    'Accept': 'application/json'
 }
 
 response = requests.get(uri, headers=headers)
 parsed_response = json.loads(response.text)
-print(json.dumps(parsed_response, indent=3))
+
+output_dir = os.getcwd()
+output_file = os.path.join(output_dir, 'balances.csv')
+
+if 'balances' in parsed_response:
+    balances = parsed_response['balances']
+
+    columns = balances[0].keys() if balances else []
+
+    with open(output_file, 'w', newline='') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=columns)
+        writer.writeheader()
+        for balance in balances:
+            writer.writerow(balance)
+
+print(f"Data has been written to {output_file}")
