@@ -21,7 +21,7 @@ def list_orders(uri):
 
     headers = {
        'X-CB-ACCESS-SIGNATURE': signature_b64,
-       'X-CB-ACCESS-timestamp': timestamp,
+       'X-CB-ACCESS-TIMESTAMP': timestamp,
        'X-CB-ACCESS-KEY': API_KEY,
        'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
        'Accept': 'application/json'
