@@ -30,7 +30,7 @@ async def main_loop():
     while True:
         try:
             async with websockets.connect(uri, ping_interval=None, max_size=None) as websocket:
-                signature = sign(channel, ACCESS_KEY, SECRET_KEY, SVC_ACCOUNTID, PORTFOLIO_ID, product_ids)
+                signature = sign(channel, ACCESS_KEY, SVC_ACCOUNTID, PORTFOLIO_ID, product_ids)
                 auth_message = json.dumps({
                     'type': 'subscribe',
                     'channel': channel,
@@ -51,7 +51,7 @@ async def main_loop():
             continue
 
 
-def sign(channel, key, secret, account_id, PORTFOLIO_ID, product_ids):
+def sign(channel, key, account_id, PORTFOLIO_ID, product_ids):
     message = channel + key + account_id + timestamp + PORTFOLIO_ID + "".join(product_ids)
     signature = hmac.new(SECRET_KEY.encode('utf-8'), message.encode('utf-8'), digestmod=hashlib.sha256).digest()
     signature_b64 = base64.b64encode(signature).decode()
