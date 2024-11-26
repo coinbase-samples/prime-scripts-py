@@ -22,7 +22,7 @@ SVC_ACCOUNTID = os.environ.get('SVC_ACCOUNTID')
 uri = 'wss://ws-feed.prime.coinbase.com'
 timestamp = str(int(time.time()))
 channel = 'l2_data'
-product_ids = ['BTC-USD']
+product_ids = ['ETH-USD']
 
 
 async def main_loop():
