@@ -76,7 +76,7 @@ quote_id = rfq_parsed["quote_id"]
 # ------------------------------
 # 2) Accept the Quote
 # ------------------------------
-time.sleep(0.5)  # brief pause
+time.sleep(0.5)
 accept_url = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/accept_quote'
 accept_payload = {
     'portfolio_id': PORTFOLIO_ID,
