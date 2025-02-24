@@ -1,7 +1,7 @@
 # Copyright 2025-present Coinbase Global, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# You may not use this file except in compliance with the License.
+# you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
 #   http://www.apache.org/licenses/LICENSE-2.0
@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import sys
 import json
 import time
 import uuid
@@ -20,12 +21,33 @@ import hmac
 import hashlib
 import base64
 import requests
+import argparse
 from urllib.parse import urlparse
+
+# ------------------------------------------------------------------------------
+# Argument Parsing
+# Example usage:
+#   python3 script.py --product SOL-USD --side BUY --size 0.5 --limit 350
+# ------------------------------------------------------------------------------
+parser = argparse.ArgumentParser(
+    description="Create and accept an RFQ using Coinbase Prime."
+)
+parser.add_argument("--product", required=True, help="Product pair, e.g. SOL-USD")
+parser.add_argument("--side", required=True, choices=["BUY", "SELL"], help="Trade side (BUY or SELL)")
+parser.add_argument("--size", required=True, help="Base quantity to trade, e.g. 0.5")
+parser.add_argument("--limit", required=True, help="Limit price, e.g. 350")
+args = parser.parse_args()
 
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
+
+product_id = args.product
+side = args.side.upper()
+limit_price = args.limit
+base_quantity = args.size
+order_type = 'RFQ'
 
 def sign_headers(method: str, url: str, payload: dict) -> dict:
     timestamp = str(int(time.time()))
@@ -43,17 +65,11 @@ def sign_headers(method: str, url: str, payload: dict) -> dict:
         'Content-Type': 'application/json'
     }
 
-# ------------------------------
+# ------------------------------------------------------------------------------
 # 1) Create an RFQ
-# ------------------------------
+# ------------------------------------------------------------------------------
 rfq_url = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/rfq'
 client_quote_id = str(uuid.uuid4())
-
-product_id = 'SOL-USD'
-side = 'BUY'
-order_type = 'RFQ'
-limit_price = '350'
-base_quantity = '0.5'
 
 rfq_payload = {
     'portfolio_id': PORTFOLIO_ID,
@@ -68,15 +84,20 @@ rfq_payload = {
 headers = sign_headers('POST', rfq_url, rfq_payload)
 rfq_response = requests.post(rfq_url, json=rfq_payload, headers=headers)
 rfq_parsed = rfq_response.json()
+
 print("=== RFQ Response ===")
 print(json.dumps(rfq_parsed, indent=3))
 
-quote_id = rfq_parsed["quote_id"]
+quote_id = rfq_parsed.get("quote_id")
+if not quote_id:
+    print("Failed to get a quote_id from the RFQ response.")
+    sys.exit(1)
 
-# ------------------------------
+# ------------------------------------------------------------------------------
 # 2) Accept the Quote
-# ------------------------------
-time.sleep(0.5)
+# ------------------------------------------------------------------------------
+time.sleep(0.5)  # small pause
+
 accept_url = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/accept_quote'
 accept_payload = {
     'portfolio_id': PORTFOLIO_ID,
