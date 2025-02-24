@@ -27,7 +27,7 @@ from urllib.parse import urlparse
 # ------------------------------------------------------------------------------
 #  Command-line arguments
 #  Usage example:
-#     python script.py --product ETH-USD --side BUY --size 0.004 --limit 3000
+#     python prime_create_rfq_compare_clob.py --product ETH-USD --side BUY --size 0.004 --limit 3000
 # ------------------------------------------------------------------------------
 parser = argparse.ArgumentParser(
     description="Create and accept an RFQ or place an order based on comparison with the CLOB."
