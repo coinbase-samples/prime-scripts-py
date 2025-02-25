@@ -150,7 +150,6 @@ rfq_is_better = is_rfq_better(side, rfq_best_price, clob_avg_fill_price)
 # ------------------------------------------------------------------------------
 if rfq_is_better:
     print("RFQ is better than CLOB price. Accepting the quote...")
-    time.sleep(0.5)
 
     accept_uri = f"https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/accept_quote"
     accept_timestamp = str(int(time.time()))
