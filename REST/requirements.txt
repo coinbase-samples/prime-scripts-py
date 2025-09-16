@@ -1,3 +1,2 @@
 websockets>=13.1
 requests>=2.32.4
-matplotlib>=3.9.2
