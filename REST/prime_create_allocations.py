@@ -15,9 +15,9 @@ import json, hmac, hashlib, time, uuid, os, base64, requests, argparse, sys
 from urllib.parse import urlparse
 
 # Must be entity or organization API key
-API_KEY = os.environ.get('ACCESS_KEY')
-SECRET_KEY = os.environ.get('SIGNING_KEY')
-PASSPHRASE = os.environ.get('PASSPHRASE')
+API_KEY = os.environ.get('ORG_ACCESS_KEY')
+SECRET_KEY = os.environ.get('ORG_SIGNING_KEY')
+PASSPHRASE = os.environ.get('ORG_PASSPHRASE')
 ORIGIN_PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
 uri = 'https://api.prime.coinbase.com/v1/allocations'
@@ -45,7 +45,7 @@ amount = 100 / len(args.destination_portfolio_ids)
 allocation_legs = []
 for dest_portfolio_id in args.destination_portfolio_ids:
     allocation_legs.append({
-            'allocation_leg_id': allocation_leg_id,
+            'allocation_leg_id': str(allocation_leg_id),
             'destination_portfolio_id': dest_portfolio_id,
             'amount': str(amount)
         })
