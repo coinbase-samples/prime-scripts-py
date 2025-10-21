@@ -24,11 +24,6 @@ import requests
 import argparse
 from urllib.parse import urlparse
 
-# ------------------------------------------------------------------------------
-# Argument Parsing
-# Example usage:
-#   python prime_create_rfq_always_accept.py --product SOL-USD --side BUY --size 0.5 --limit 350
-# ------------------------------------------------------------------------------
 parser = argparse.ArgumentParser(
     description="Create and accept an RFQ using Coinbase Prime."
 )

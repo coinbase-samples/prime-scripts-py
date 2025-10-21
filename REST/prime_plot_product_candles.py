@@ -25,13 +25,6 @@ import matplotlib.dates as mdates
 from urllib.parse import urlparse
 from datetime import datetime, timedelta
 
-# ------------------------------------------------------------------------------
-# Argument Parsing
-# Example usage:
-#   python prime_plot_product_candles.py --product BTC-USD --granularity ONE_HOUR --hours 350
-#   python prime_plot_product_candles.py --product ETH-USD --granularity FIFTEEN_MINUTE --hours 24
-# ------------------------------------------------------------------------------
-
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')

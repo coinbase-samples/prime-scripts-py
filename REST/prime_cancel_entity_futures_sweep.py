@@ -26,7 +26,6 @@ API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 
-# Parse command line arguments
 parser = argparse.ArgumentParser(description='Cancel pending futures sweep for an entity')
 parser.add_argument('--entity-id', type=str, required=True, help='Entity ID')
 

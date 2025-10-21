@@ -23,13 +23,6 @@ import argparse
 import uuid
 from urllib.parse import urlparse
 
-# ------------------------------------------------------------------------------
-# Argument Parsing
-# Example usage:
-#   python prime_request_unstake.py --currency-symbol ETH --amount 1.5
-#   python prime_request_unstake.py --currency-symbol ETH --amount 1.5 --external-id my-unstake-001
-# ------------------------------------------------------------------------------
-
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')

@@ -22,13 +22,6 @@ import requests
 import argparse
 from urllib.parse import urlparse
 
-# ------------------------------------------------------------------------------
-# Argument Parsing
-# Example usage:
-#   python prime_get_portfolio_buying_power.py --base BTC --quote USD
-#   python prime_get_portfolio_buying_power.py --base ETH --quote USDC
-# ------------------------------------------------------------------------------
-
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')

@@ -28,7 +28,6 @@ SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
-# Parse command line arguments
 parser = argparse.ArgumentParser(description='Claim wallet staking rewards (alpha)')
 parser.add_argument('--wallet-id', type=str, required=True, help='Wallet ID')
 parser.add_argument('--amount', type=str, help='Amount to claim (ETH only, defaults to maximum available)')

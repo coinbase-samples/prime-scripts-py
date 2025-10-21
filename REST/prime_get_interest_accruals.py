@@ -23,13 +23,6 @@ import argparse
 from urllib.parse import urlparse
 from datetime import datetime, timedelta
 
-# ------------------------------------------------------------------------------
-# Argument Parsing
-# Example usage:
-#   python prime_get_interest_accruals.py --start 2025-05-04T00:00:00Z --end 2025-05-07T00:00:00Z
-#   python prime_get_interest_accruals.py --days 7
-# ------------------------------------------------------------------------------
-
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')

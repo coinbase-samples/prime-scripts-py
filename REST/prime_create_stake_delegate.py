@@ -23,12 +23,6 @@ import requests
 import argparse
 from urllib.parse import urlparse
 
-# ------------------------------------------------------------------------------
-# Argument Parsing
-# Example usage:
-#   python prime_create_stake_delegate.py --wallet-id ce2c8570-5b04-46e8-a673-65f57c72d8a1
-# ------------------------------------------------------------------------------
-
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')

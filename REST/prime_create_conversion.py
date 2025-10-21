@@ -12,35 +12,43 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+import json
+import hmac
+import hashlib
+import time
+import base64
+import requests
+import argparse
+import uuid
 from urllib.parse import urlparse
-import json, hmac, hashlib, time, uuid, os, base64, requests
 
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
 PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
-wallet_id = 'WALLET_UUID'
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Create a conversion between USD, USDC, and PYUSD')
+parser.add_argument('--wallet-id', type=str, required=True, help='Source wallet ID')
+parser.add_argument('--amount', type=str, required=True, help='Amount to convert')
+parser.add_argument('--destination', type=str, required=True, help='Destination wallet ID')
+parser.add_argument('--source-symbol', type=str, required=True, choices=['USD', 'USDC', 'PYUSD'], help='Source symbol (USD, USDC, or PYUSD)')
+parser.add_argument('--destination-symbol', type=str, required=True, choices=['USD', 'USDC', 'PYUSD'], help='Destination symbol (USD, USDC, or PYUSD)')
 
-uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{wallet_id}/conversion'
+args = parser.parse_args()
+
+uri = f'https://api.prime.coinbase.com/v1/portfolios/{PORTFOLIO_ID}/wallets/{args.wallet_id}/conversion'
 
 timestamp = str(int(time.time()))
-
-# only supports conversions between USDC and USD
-amount = '1'
-destination = 'DESTINATION_WALLET_UUID'
-idempotency_key = uuid.uuid4()
-source_symbol = 'USD'
-destination_symbol = 'USDC'
+idempotency_key = str(uuid.uuid4())
 
 payload = {
-    'portfolio_id': PORTFOLIO_ID,
-    'wallet_id': wallet_id,
-    'amount': amount,
-    'destination': destination,
-    'idempotency_key': str(idempotency_key),
-    'source_symbol': source_symbol,
-    'destination_symbol': destination_symbol
+    'amount': args.amount,
+    'destination': args.destination,
+    'idempotency_key': idempotency_key,
+    'source_symbol': args.source_symbol,
+    'destination_symbol': args.destination_symbol
 }
 
 url_path = urlparse(uri).path
@@ -52,9 +60,10 @@ headers = {
     'X-CB-ACCESS-TIMESTAMP': timestamp,
     'X-CB-ACCESS-KEY': API_KEY,
     'X-CB-ACCESS-PASSPHRASE': PASSPHRASE,
-    'Accept': 'application/json'
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
 }
 
-response = requests.post(uri, json=payload, headers=headers)
+response = requests.post(uri, headers=headers, data=json.dumps(payload))
 parsed_response = json.loads(response.text)
 print(json.dumps(parsed_response, indent=3))

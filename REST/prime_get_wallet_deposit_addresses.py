@@ -22,13 +22,6 @@ import requests
 import argparse
 from urllib.parse import urlparse
 
-# ------------------------------------------------------------------------------
-# Argument Parsing
-# Example usage:
-#   python prime_get_wallet_deposit_addresses.py --wallet-id abc123
-#   python prime_get_wallet_deposit_addresses.py --wallet-id abc123 --network-id base-mainnet --sort DESC
-# ------------------------------------------------------------------------------
-
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')

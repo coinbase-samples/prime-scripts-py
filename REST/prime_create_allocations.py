@@ -14,7 +14,6 @@
 import json, hmac, hashlib, time, uuid, os, base64, requests, argparse, sys
 from urllib.parse import urlparse
 
-# Must be entity or organization API key
 API_KEY = os.environ.get('ORG_ACCESS_KEY')
 SECRET_KEY = os.environ.get('ORG_SIGNING_KEY')
 PASSPHRASE = os.environ.get('ORG_PASSPHRASE')
