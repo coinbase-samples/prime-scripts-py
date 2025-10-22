@@ -12,7 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import asyncio, base64, hashlib, hmac, json, os, sys, time, websockets
+import asyncio
+import base64
+import hashlib
+import hmac
+import json
+import os
+import sys
+import time
+
+import websockets
 
 PASSPHRASE = os.environ.get('PASSPHRASE')
 ACCESS_KEY = os.environ.get('ACCESS_KEY')

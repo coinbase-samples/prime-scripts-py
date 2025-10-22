@@ -11,10 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import json, hmac, hashlib, time, uuid, os, base64, requests, argparse, sys
+import argparse
+import base64
+import hashlib
+import hmac
+import json
+import os
+import sys
+import time
+import uuid
 from urllib.parse import urlparse
 
-# Must be entity or organization API key
+import requests
+
+
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
 PASSPHRASE = os.environ.get('PASSPHRASE')
@@ -45,7 +55,7 @@ amount = 100 / len(args.destination_portfolio_ids)
 allocation_legs = []
 for dest_portfolio_id in args.destination_portfolio_ids:
     allocation_legs.append({
-            'allocation_leg_id': allocation_leg_id,
+            'allocation_leg_id': str(allocation_leg_id),
             'destination_portfolio_id': dest_portfolio_id,
             'amount': str(amount)
         })

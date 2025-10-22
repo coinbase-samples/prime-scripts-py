@@ -1,2 +1,2 @@
-websockets==11.0.3
-requests==2.32.4
+websockets>=13.1
+requests>=2.32.4

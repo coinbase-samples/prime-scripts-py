@@ -12,17 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import sys
-import json
-import time
-import uuid
-import hmac
+import argparse
 import base64
 import hashlib
-import requests
-import argparse
+import hmac
+import json
+import os
+import sys
+import time
+import uuid
 from urllib.parse import urlparse
+
+import requests
 
 # ------------------------------------------------------------------------------
 #  Command-line arguments

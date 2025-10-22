@@ -12,23 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
+import base64
+import hashlib
+import hmac
+import json
 import os
 import sys
-import json
 import time
 import uuid
-import hmac
-import hashlib
-import base64
-import requests
-import argparse
 from urllib.parse import urlparse
 
-# ------------------------------------------------------------------------------
-# Argument Parsing
-# Example usage:
-#   python prime_create_rfq_always_accept.py --product SOL-USD --side BUY --size 0.5 --limit 350
-# ------------------------------------------------------------------------------
+import requests
+
 parser = argparse.ArgumentParser(
     description="Create and accept an RFQ using Coinbase Prime."
 )

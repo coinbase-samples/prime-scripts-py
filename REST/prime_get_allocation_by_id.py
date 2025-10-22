@@ -11,8 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import sys, json, hmac, hashlib, time, os, base64, requests
+import base64
+import hashlib
+import hmac
+import json
+import os
+import sys
+import time
 from urllib.parse import urlparse
+
+import requests
 
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')

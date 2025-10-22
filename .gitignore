@@ -13,3 +13,4 @@ __pycache__/
 *.pyc
 *.pyo
 FIX/example.cfg
+t_*
