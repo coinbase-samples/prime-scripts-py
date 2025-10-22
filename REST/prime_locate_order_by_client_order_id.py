@@ -1,5 +1,13 @@
+import base64
+import hashlib
+import hmac
+import json
+import os
+import sys
+import time
 from urllib.parse import urlparse
-import json, hmac, hashlib, time, os, base64, requests, sys
+
+import requests
 
 if len(sys.argv) < 2:
     print('Usage: python prime_locate_order_by_client_order_id.py <client_order_id>')

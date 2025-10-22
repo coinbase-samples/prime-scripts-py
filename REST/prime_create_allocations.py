@@ -11,12 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import json, hmac, hashlib, time, uuid, os, base64, requests, argparse, sys
+import argparse
+import base64
+import hashlib
+import hmac
+import json
+import os
+import sys
+import time
+import uuid
 from urllib.parse import urlparse
 
-API_KEY = os.environ.get('ORG_ACCESS_KEY')
-SECRET_KEY = os.environ.get('ORG_SIGNING_KEY')
-PASSPHRASE = os.environ.get('ORG_PASSPHRASE')
+import requests
+
+
+API_KEY = os.environ.get('ACCESS_KEY')
+SECRET_KEY = os.environ.get('SIGNING_KEY')
+PASSPHRASE = os.environ.get('PASSPHRASE')
 ORIGIN_PORTFOLIO_ID = os.environ.get('PORTFOLIO_ID')
 
 uri = 'https://api.prime.coinbase.com/v1/allocations'

@@ -12,18 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import json
-import hmac
-import hashlib
-import time
-import base64
-import requests
 import argparse
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
+import base64
+import hashlib
+import hmac
+import json
+import os
+import time
+from datetime import datetime
+from datetime import timedelta
 from urllib.parse import urlparse
-from datetime import datetime, timedelta
+
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import requests
 
 API_KEY = os.environ.get('ACCESS_KEY')
 SECRET_KEY = os.environ.get('SIGNING_KEY')
