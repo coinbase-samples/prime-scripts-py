@@ -1,2 +1,2 @@
-certifi==2024.7.4
+certifi==2026.10.19
 quickfix-ssl==1.15.1.post4
